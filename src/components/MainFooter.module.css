@@ -1,0 +1,21 @@
+.nav {
+  display: flex;
+  position: absolute;
+  bottom: 0;
+  background-color: white;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav a,
+.nav div {
+  text-decoration: none;
+  color: rgb(70, 70, 70);
+  padding: 10px;
+  font-size: 0.8rem;
+}
+
+.nav a:hover {
+  text-decoration: underline;
+}

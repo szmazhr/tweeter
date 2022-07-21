@@ -4,7 +4,12 @@ module.exports = {
     es2021: true,
     'jest/globals': true,
   },
-  extends: ['plugin:react/recommended', 'airbnb', 'prettier'],
+  extends: [
+    'airbnb',
+    'plugin:react/recommended',
+    'plugin:react/jsx-runtime',
+    'prettier',
+  ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
@@ -22,6 +27,7 @@ module.exports = {
       'ignorePackages',
       {
         js: 'never',
+        jsx: 'never',
         ts: 'never',
         tsx: 'never',
       },
@@ -38,7 +44,7 @@ module.exports = {
   settings: {
     'import/resolver': {
       node: {
-        extensions: ['.js', '.ts', '.tsx'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
         moduleDirectory: ['node_modules', 'src/'],
       },
     },
