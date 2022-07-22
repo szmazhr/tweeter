@@ -1325,7 +1325,8 @@ input.firebaseui-input-invalid {
   line-height: normal;
   min-height: 40px;
   padding: 8px 16px;
-  width: clamp(190px, 100%, 250px);
+  max-width: 250px;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;

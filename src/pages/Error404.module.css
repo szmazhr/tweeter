@@ -1,0 +1,35 @@
+.main {
+  margin-top: 8vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: rgb(53, 53, 53);
+}
+
+.text {
+  font-size: 0.9rem;
+}
+
+.or {
+  position: relative;
+  opacity: 0.9;
+}
+
+.or::after,
+.or::before {
+  content: '';
+  position: absolute;
+  width: 2em;
+  height: 1px;
+  background-color: black;
+  opacity: 0.5;
+  left: 150%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.or::before {
+  left: initial;
+  right: 150%;
+}

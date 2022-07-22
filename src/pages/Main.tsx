@@ -1,28 +1,21 @@
 import { useEffect } from 'react';
-import logo from '../assets/logo.svg';
-import FirebaseUi from '../components/FirebaseUi';
-import MainFooter from '../components/MainFooter';
-import styles from './Main.module.css';
+import { Outlet, useLocation } from 'react-router-dom';
+import Login from './Login';
 
 function Main() {
+  const location = useLocation();
+
   useEffect(() => {
     document.title = `Tweeter. It's what's happening`;
   }, []);
-  return (
+  return location.pathname !== '/' ? (
     <>
-      <div className={styles.container}>
-        <div className={styles.action}>
-          <div className={styles.logo} />
-          <h1>Happening now</h1>
-          <h3>Join Tweeter today.</h3>
-          <FirebaseUi />
-        </div>
-        <div className={styles.thumbnail}>
-          <img src={logo} alt="" />
-        </div>
-      </div>
-      <MainFooter />
+      {/* Sidebar */}
+      <Outlet />
+      {/* Widget */}
     </>
+  ) : (
+    <Login />
   );
 }
 

@@ -67,6 +67,7 @@ const $firebase = (() => {
         callback(null);
       }
     });
+    return true;
   };
 
   return { renderUi, signOut, onAuthStateChanged };

@@ -2,7 +2,7 @@
 import firebase from 'firebase/compat/app';
 
 namespace Types {
-  export type User = firebase.User | null;
+  export type User = firebase.User | null | undefined;
   export type setUserCallback = (user: User) => void;
 }
 

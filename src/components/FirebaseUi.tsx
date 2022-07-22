@@ -9,21 +9,10 @@ function FirebaseUi() {
 
   useEffect(() => {
     if (!user) {
-      $firebase.renderUi('.firebaseui-auth-container');
+      $firebase.renderUi('#firebaseui-auth-container');
     }
   }, [user]);
 
-  return (
-    <>
-      <div className="firebaseui-auth-container" />
-      {user ? (
-        <button type="button" onClick={$firebase.signOut}>
-          SignOut
-        </button>
-      ) : (
-        ''
-      )}
-    </>
-  );
+  return <div id="firebaseui-auth-container" />;
 }
 export default FirebaseUi;

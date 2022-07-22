@@ -1,0 +1,26 @@
+.primary,
+.dark,
+.light {
+  border-radius: 50vw;
+  padding: 0.5em 1em;
+  text-decoration: none;
+
+}
+
+.primary:hover,
+.dark:hover,
+.light:hover {
+  text-decoration: underline;
+}
+
+.primary {
+  color: white;
+  background-color: #1D9BF0;
+}
+
+.dark {
+  color: white;
+  background-color: #000;
+  font-weight: 700;
+
+}
