@@ -1,0 +1,53 @@
+a.active.navLink .active {
+  display: none;
+}
+
+a.navLink:not(.active) .inActive {
+  display: none;
+}
+
+a.navLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+  font-size: 1.2rem;
+  padding: 0.7rem;
+  text-decoration: none;
+  border-radius: 50vh;
+  transition: background-color 0.3s ease-out;
+  color: rgb(17, 17, 17);
+}
+
+
+a.navLink.active {
+  color: rgb(0, 0, 0);
+  font-weight: 700;
+}
+
+a.navLink i {
+  font-size: 1.2em;
+}
+
+a.navLink:hover {
+  background-color: rgba(15, 20, 25, 0.1)
+}
+
+a.navLink span {
+  padding-right: 0.8em;
+}
+
+@media screen and (max-width: 1265px) {
+  a.navLink {
+    width: 50px;
+    height: 50px;
+  }
+
+  a.navLink[href='/explore'] i::before {
+    content: '\F52A';
+  }
+
+  a.navLink span {
+    display: none;
+  }
+}

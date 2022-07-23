@@ -1,0 +1,45 @@
+.tweetBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  gap: 1em;
+  font-size: 1.2rem;
+  text-decoration: none;
+  border-radius: 50vh;
+  transition: background-color 0.3s ease-out;
+  color: rgb(255, 255, 255);
+  font-weight: 700;
+  background-color: var(--primary-color);
+}
+
+.sidebar {
+  padding: 1rem;
+  width: 100%;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.sidebar:hover {
+  filter: brightness(0.9);
+}
+
+.sidebar i {
+  font-size: 1.5rem;
+  display: none;
+}
+
+@media screen and (max-width: 1265px) {
+  .sidebar {
+    width: 50px;
+    height: 50px;
+  }
+
+  .sidebar span {
+    display: none;
+  }
+
+  .sidebar i {
+    display: initial;
+  }
+}

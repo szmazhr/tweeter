@@ -1,19 +1,17 @@
-import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
+import Sidebar from '../components/Sidebar';
 import Login from './Login';
+import styles from './Main.module.css';
 
 function Main() {
   const location = useLocation();
-
-  useEffect(() => {
-    document.title = `Tweeter. It's what's happening`;
-  }, []);
   return location.pathname !== '/' ? (
-    <>
-      {/* Sidebar */}
-      <Outlet />
-      {/* Widget */}
-    </>
+    <div className={styles.app}>
+      <Sidebar />
+      <main>
+        <Outlet />
+      </main>
+    </div>
   ) : (
     <Login />
   );

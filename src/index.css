@@ -1,5 +1,13 @@
+@import '~bootstrap-icons/font/bootstrap-icons.css';
+
+
 * {
   box-sizing: border-box;
+}
+
+html {
+  /* --primary-color: red; */
+  --primary-color: #1D9BF0
 }
 
 html {

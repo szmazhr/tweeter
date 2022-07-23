@@ -1,0 +1,16 @@
+.app {
+  display: grid;
+  grid-template-columns: minmax(265px, 280px) 1000px;
+  max-width: fit-content;
+  margin: auto;
+}
+
+.app main {
+  background-color: blueviolet;
+}
+
+@media screen and (max-width: 1265px) {
+  .app {
+    grid-template-columns: max-content 1000px;
+  }
+}

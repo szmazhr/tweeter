@@ -2,13 +2,17 @@ import { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FirebaseUi from '../components/FirebaseUi';
 import MainFooter from '../components/MainFooter';
-import logo from '../assets/logo.svg';
 import styles from './Login.module.css';
 import CurrentUser from '../contexts/index.c';
+import LogoImg from '../components/LogoImg';
 
 function Login() {
   const user = useContext(CurrentUser);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = `Tweeter. It's what's happening`;
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -26,7 +30,7 @@ function Login() {
           <FirebaseUi />
         </div>
         <div className={styles.thumbnail}>
-          <img src={logo} alt="" />
+          <LogoImg />
         </div>
       </div>
       <MainFooter />

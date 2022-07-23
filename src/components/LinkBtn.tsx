@@ -1,11 +1,6 @@
 import { Link } from 'react-router-dom';
+import { convertToSlug } from '../utils/utils';
 import styles from './LinkBtn.module.css';
-
-function convertToSlug(Text: string) {
-  return Text.toLowerCase()
-    .replace(/ /g, '-')
-    .replace(/[^\w-]+/g, '');
-}
 
 type LinkBtnProps = {
   label: string;

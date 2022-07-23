@@ -39,7 +39,6 @@ const $firebase = (() => {
         },
         fullLabel: 'Continue with Phone',
         defaultCountry: 'IN',
-        buttonColor: '#1D9BF0',
       },
       'anonymous',
     ],

@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
 
-  min-height: 100vh;
+  min-height: calc(100vh - 2.2rem);
 }
 
 .action {
@@ -10,7 +10,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 100px 40px;
+  padding: 8vw 2vw;
   /* gap: 10px; */
   flex-shrink: 1;
 }
@@ -34,14 +34,15 @@
   background-image: url('../assets/login-thumbnail.jpg');
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 100px 40px;
+  padding: 10vw 20vw;
 }
 
 .thumbnail img {
-  max-width: 600px;
+  max-width: 500px;
   width: 100%;
   filter: saturate(0) brightness(2);
 
@@ -68,5 +69,6 @@
 
   .thumbnail {
     flex: 4 2 auto;
+    padding: 100px 40px;
   }
 }

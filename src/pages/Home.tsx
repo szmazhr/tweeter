@@ -1,11 +1,15 @@
 import { useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import $firebase from '../apis/firebase';
+import { useLocation, useNavigate } from 'react-router-dom';
 import CurrentUser from '../contexts/index.c';
 
 function Main() {
   const user = useContext(CurrentUser);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    document.title = `Home / Tweeter`;
+  }, []);
 
   useEffect(() => {
     if (!user) {
@@ -13,10 +17,6 @@ function Main() {
     }
   }, [user]);
 
-  return (
-    <button type="button" onClick={$firebase.signOut}>
-      SignOut
-    </button>
-  );
+  return <span>{location.pathname}</span>;
 }
 export default Main;

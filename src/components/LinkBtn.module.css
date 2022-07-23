@@ -15,7 +15,7 @@
 
 .primary {
   color: white;
-  background-color: #1D9BF0;
+  background-color: var(--primary-color);
 }
 
 .dark {

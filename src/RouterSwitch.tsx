@@ -9,8 +9,8 @@ import TOS from './pages/TOS';
 import CurrentUser from './contexts/index.c';
 import Error404 from './pages/Error404';
 import Home from './pages/Home';
-import logo from './assets/logo.svg';
 import styles from './loading.module.css';
+import LogoImg from './components/LogoImg';
 
 function RouterSwitch() {
   const [user, setUser] = useState<Types.User>(undefined);
@@ -30,7 +30,7 @@ function RouterSwitch() {
 
   return !loaded ? (
     <div className={styles.container}>
-      <img src={logo} alt="" />
+      <LogoImg />
     </div>
   ) : (
     <BrowserRouter>
@@ -38,6 +38,10 @@ function RouterSwitch() {
         <Routes>
           <Route path="/" element={<Main />}>
             <Route path="/home" element={<Home />} />
+            <Route path="/explore" element={<Home />} />
+            <Route path="/notifications" element={<Home />} />
+            <Route path="/messages" element={<Home />} />
+            <Route path="/szmazhr" element={<Home />} />
           </Route>
           <Route path="/terms-of-service" element={<TOS />} />
           <Route path="/privacy-policy" element={<PP />} />
@@ -47,23 +51,5 @@ function RouterSwitch() {
       </CurrentUser.Provider>
     </BrowserRouter>
   );
-
-  // return (
-  //   <>
-  //   <BrowserRouter>
-  //     <CurrentUser.Provider value={user}>
-  //       <Routes>
-  //         <Route path="/" element={<Main />}>
-  //           <Route path="/home" element={<Home />} />
-  //         </Route>
-  //         <Route path="/terms-of-service" element={<TOS />} />
-  //         <Route path="/privacy-policy" element={<PP />} />
-  //         <Route path="/github" element={<GitHub />} />
-  //         <Route path="*" element={<Error404 />} />
-  //       </Routes>
-  //     </CurrentUser.Provider>
-  //   </BrowserRouter>
-  //   </>
-  // );
 }
 export default RouterSwitch;
