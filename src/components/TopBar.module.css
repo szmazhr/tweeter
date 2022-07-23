@@ -1,0 +1,47 @@
+.topBar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  gap: 20px;
+}
+
+.topBar button {
+  height: 40px;
+  width: 40px;
+  border-radius: 50vw;
+  border: none;
+  font-size: 1.5rem;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.topBar button:hover {
+  background-color: var(--muted-light);
+}
+
+.backdrop {
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+}
+
+.others {
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+.titles {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.title {
+  color: black;
+  font-weight: 700;
+}
+
+.subTitle {
+  color: var(--muted-color);
+  font-size: 0.8rem;
+}

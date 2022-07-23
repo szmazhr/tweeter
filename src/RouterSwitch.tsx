@@ -11,6 +11,7 @@ import Error404 from './pages/Error404';
 import Home from './pages/Home';
 import styles from './loading.module.css';
 import LogoImg from './components/LogoImg';
+import Profile from './pages/Profile';
 
 function RouterSwitch() {
   const [user, setUser] = useState<Types.User>(undefined);
@@ -41,7 +42,7 @@ function RouterSwitch() {
             <Route path="/explore" element={<Home />} />
             <Route path="/notifications" element={<Home />} />
             <Route path="/messages" element={<Home />} />
-            <Route path="/szmazhr" element={<Home />} />
+            <Route path="/szmazhr" element={<Profile />} />
           </Route>
           <Route path="/terms-of-service" element={<TOS />} />
           <Route path="/privacy-policy" element={<PP />} />

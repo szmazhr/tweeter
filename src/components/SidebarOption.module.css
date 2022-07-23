@@ -30,7 +30,7 @@ a.navLink i {
 }
 
 a.navLink:hover {
-  background-color: rgba(15, 20, 25, 0.1)
+  background-color: var(--muted-light)
 }
 
 a.navLink span {

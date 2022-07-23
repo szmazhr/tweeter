@@ -1,0 +1,7 @@
+.userCoverImg {
+  width: 100%;
+  aspect-ratio: 3 / 1;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}

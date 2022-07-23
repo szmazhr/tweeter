@@ -1,16 +1,57 @@
 .app {
   display: grid;
-  grid-template-columns: minmax(265px, 280px) 1000px;
+  grid-template-columns: minmax(265px, 280px) max-content;
   max-width: fit-content;
   margin: auto;
 }
 
-.app main {
-  background-color: blueviolet;
+.app .content {
+  display: grid;
+  grid-template-columns: max-content max-content;
+}
+
+.app .content> :first-child {
+  background-color: white;
+  border-left: 1px solid var(--muted-light);
+  border-right: 1px solid var(--muted-light);
+  width: 600px;
+  max-width: calc(100vw - 81px);
+}
+
+.app .content> :last-child {
+  background-color: darkcyan;
+  width: 400px;
 }
 
 @media screen and (max-width: 1265px) {
   .app {
-    grid-template-columns: max-content 1000px;
+    grid-template-columns: max-content max-content;
+  }
+}
+
+@media screen and (max-width: 1080px) {
+  .app .content> :last-child {
+    display: none;
+  }
+
+}
+
+@media screen and (max-width: 682px) {
+
+  .app .content> :first-child {
+    border-right: none;
+
+  }
+}
+
+@media screen and (max-width: 499px) {
+
+  .app .content {
+    margin-bottom: 51px;
+  }
+
+  .app .content>:first-child {
+    max-width: 100vw;
+    border-left: none;
   }
 }

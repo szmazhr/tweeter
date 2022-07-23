@@ -8,9 +8,9 @@ function Main() {
   return location.pathname !== '/' ? (
     <div className={styles.app}>
       <Sidebar />
-      <main>
+      <div className={styles.content}>
         <Outlet />
-      </main>
+      </div>
     </div>
   ) : (
     <Login />

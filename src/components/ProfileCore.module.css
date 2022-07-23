@@ -1,0 +1,110 @@
+.coverImg {
+  height: 200px;
+  max-height: 33vw;
+}
+
+.personalInfo {
+  margin-top: -14%;
+  padding: 20px;
+}
+
+.rowSB {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+}
+
+.avatar {
+  width: 132px;
+  height: 132px;
+  max-height: 22vw;
+  max-width: 22vw;
+  border: 5px solid white;
+  border-radius: 50%;
+}
+
+.action {
+  font-weight: 700;
+  font-size: clamp(0.6rem, 3vw, 1rem);
+  padding: 0.5em 1em;
+  border-radius: 50vw;
+  cursor: pointer;
+  margin-bottom: 1.4em;
+}
+
+.actionEdit {
+  transition: background-color 0.3s ease-out;
+  border: 1px solid var(--muted-light);
+  background-color: white;
+}
+
+.actionFollow {
+  background-color: black;
+  color: white;
+  transition: filter 0.3s ease-out;
+}
+
+
+.actionEdit:hover {
+  background-color: var(--muted-light);
+}
+
+.actionFollow:hover {
+  filter: opacity(.85);
+}
+
+.nameRow {
+  padding: 0.8em 0 0.1em 0;
+}
+
+.name {
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: black;
+}
+
+.userName {
+  font-size: 0.8rem;
+  color: var(--muted-color);
+}
+
+.contacts,
+.otherInfo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  font-size: 0.95rem;
+  color: var(--muted-color);
+}
+
+.contacts p,
+.otherInfo p {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 5px 0;
+}
+
+.contacts>p:first-child,
+.otherInfo>p:first-child {
+  margin-right: 13px;
+}
+
+.otherInfo p i {
+  font-size: 1rem;
+}
+
+.contacts {
+  font-size: 0.9rem;
+}
+
+.contacts .count {
+  font-weight: 700;
+  color: black;
+}
+
+.contacts p {
+  gap: 4px;
+}

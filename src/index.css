@@ -6,8 +6,9 @@
 }
 
 html {
-  /* --primary-color: red; */
-  --primary-color: #1D9BF0
+  --primary-color: #1D9BF0;
+  --muted-color: #536471;
+  --muted-light: rgba(15, 20, 25, 0.1);
 }
 
 html {

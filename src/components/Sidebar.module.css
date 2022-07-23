@@ -8,12 +8,6 @@
   width: 90%;
 }
 
-
-.sidebar a:hover {
-  background-color: rgba(15, 20, 25, 0.1)
-}
-
-
 .logo {
   display: flex;
   align-items: center;
@@ -89,7 +83,7 @@
 
 .profile button .userInfo :last-child {
   font-size: 0.85rem;
-  color: rgba(15, 20, 25, 0.8)
+  color: var(--muted-color)
 }
 
 .profile button .action {
@@ -179,4 +173,66 @@
   .profile button .action {
     display: none;
   }
+}
+
+@media screen and (max-width: 499px) {
+
+  .logo,
+  .userPageOption {
+    display: none;
+  }
+
+  .tweetBtn {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 10px;
+    margin-bottom: 60px;
+  }
+
+  .tweetBtn button {
+    width: 60px;
+    height: 60px;
+  }
+
+  .tweetBtn button i {
+    font-size: 1.6rem;
+  }
+
+  .profile {
+    position: fixed;
+    top: 0;
+    left: 0;
+    margin: 10px;
+  }
+
+  .profile button .userAvatar {
+    width: 35px;
+    height: 35px;
+  }
+
+  .basicAction {
+    position: fixed;
+    flex-direction: row;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-top: 1px solid var(--muted-light);
+  }
+
+  .basicAction a {
+    flex: 1;
+    background-color: white;
+    border-radius: 0 !important;
+  }
+
+  .sidebar {
+    width: 0;
+    padding: 0;
+  }
+
+  .out {
+    display: none;
+  }
+
 }

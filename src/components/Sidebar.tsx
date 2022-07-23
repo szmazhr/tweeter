@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { convertToSlug } from '../utils/utils';
 import LogoImg from './LogoImg';
@@ -9,6 +9,7 @@ import UserImage from './UserImage';
 import UserName from './UserName';
 import UserUserName from './UserUserName';
 import $firebase from '../apis/firebase';
+import CurrentUser from '../contexts/index.c';
 
 const basicOptions = [
   {
@@ -47,6 +48,7 @@ const initialState = {
 function Sidebar() {
   const [profileOption, setProfileOption] = useState(initialState);
   const sidebarRef = useRef<HTMLDivElement>(null)!;
+  const user = useContext(CurrentUser);
 
   const profileClickHandler = () => {
     sidebarRef.current!.toggleAttribute('data-toggle');
@@ -58,67 +60,94 @@ function Sidebar() {
   }, []);
 
   return (
-    <div className={styles.sidebar} ref={sidebarRef}>
-      {/* twitter icon */}
-      <div className={styles.options}>
-        <div className={styles.sidebarItems}>
-          <Link className={styles.logo} to="/">
-            <LogoImg />
-          </Link>
+    <div ref={sidebarRef}>
+      <div className={styles.sidebarMobile} />
+      <div className={styles.sidebar}>
+        {/* twitter icon */}
+        <div className={`${styles.options} ${!user ? styles.out : ''}`}>
+          <div className={styles.sidebarItems}>
+            <Link className={styles.logo} to="/">
+              <LogoImg />
+            </Link>
+          </div>
+
+          {/* Basic options */}
+          {user ? (
+            <>
+              <nav className={`${styles.sidebarItems} ${styles.basicAction}`}>
+                {basicOptions.map((option) => {
+                  const slug = convertToSlug(option.label);
+                  return (
+                    <SidebarOption
+                      key={slug}
+                      option={{ ...option, to: slug }}
+                    />
+                  );
+                })}
+              </nav>
+              {/* Profile option */}
+              <div
+                className={`${styles.sidebarItems} ${styles.userPageOption}`}
+              >
+                <SidebarOption option={profileOption} />
+              </div>
+              {/* Tweet Btn option */}
+              <div className={`${styles.sidebarItems} ${styles.tweetBtn}`}>
+                <TweetBtn type="sidebar" action="openEditor" />
+              </div>
+            </>
+          ) : (
+            <nav className={`${styles.sidebarItems} ${styles.basicAction}`}>
+              {[basicOptions.find((option) => option.label === 'Explore')!].map(
+                (option) => {
+                  const slug = convertToSlug(option.label);
+                  return (
+                    <SidebarOption
+                      key={slug}
+                      option={{ ...option, to: slug }}
+                    />
+                  );
+                }
+              )}
+            </nav>
+          )}
         </div>
-
-        {/* Basic options */}
-        <nav className={styles.sidebarItems}>
-          {basicOptions.map((option) => {
-            const slug = convertToSlug(option.label);
-            return (
-              <SidebarOption key={slug} option={{ ...option, to: slug }} />
-            );
-          })}
-        </nav>
-
-        {/* Profile option */}
-        <div className={styles.sidebarItems}>
-          <SidebarOption option={profileOption} />
-        </div>
-
-        {/* Tweet Btn option */}
-        <div className={styles.sidebarItems}>
-          <TweetBtn type="sidebar" action="openEditor" />
-        </div>
-      </div>
-
-      {/* UserAction options */}
-      <div className={styles.profile}>
-        <div
-          className={styles.optionBoxBg}
-          aria-hidden="true"
-          onClick={profileClickHandler}
-        />
-        <div className={styles.optionBox}>
-          <li>
-            <button type="button" onClick={$firebase.signOut}>
-              <span>Log Out</span>
-              <UserUserName />
+        {/* UserAction options */}
+        {user ? (
+          <div className={styles.profile}>
+            <div
+              className={styles.optionBoxBg}
+              aria-hidden="true"
+              onClick={profileClickHandler}
+            />
+            <div className={styles.optionBox}>
+              <li>
+                <button type="button" onClick={$firebase.signOut}>
+                  <span>Log Out</span>
+                  <UserUserName />
+                </button>
+              </li>
+            </div>
+            <button
+              type="button"
+              data-btnid="profileBtn"
+              onClick={profileClickHandler}
+            >
+              <div className={styles.userAvatar}>
+                <UserImage userName="sz" />
+              </div>
+              <div className={styles.userInfo}>
+                <UserName />
+                <UserUserName />
+              </div>
+              <div className={styles.action}>
+                <i className="bi bi-three-dots" />
+              </div>
             </button>
-          </li>
-        </div>
-        <button
-          type="button"
-          data-btnid="profileBtn"
-          onClick={profileClickHandler}
-        >
-          <div className={styles.userAvatar}>
-            <UserImage userName="sz" />
           </div>
-          <div className={styles.userInfo}>
-            <UserName />
-            <UserUserName />
-          </div>
-          <div className={styles.action}>
-            <i className="bi bi-three-dots" />
-          </div>
-        </button>
+        ) : (
+          ''
+        )}
       </div>
     </div>
   );
