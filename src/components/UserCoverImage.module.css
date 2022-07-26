@@ -4,4 +4,5 @@
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)), linear-gradient(to right, var(--primary-color), var(--primary-color));
 }

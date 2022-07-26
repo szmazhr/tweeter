@@ -1,0 +1,103 @@
+.inputControl {
+  outline: 1px solid rgb(170, 170, 170);
+  border-radius: 5px;
+  position: relative;
+  margin: 20px 0;
+  transition: margin 0.3s ease-out;
+}
+
+.inputControl input,
+.inputControl textarea {
+  outline: none;
+  border: none;
+  width: 100%;
+  padding: 0.4rem 0.5rem;
+  background-color: transparent;
+  font-size: 1rem;
+  margin: 0;
+  padding-top: 1.6rem;
+}
+
+.inputControl textarea {
+  resize: none;
+  margin-bottom: -4px;
+}
+
+.inputControl label {
+  position: absolute;
+  top: 1.55rem;
+  left: 0;
+  transform: translate(10px, -50%);
+  color: var(--muted-color);
+  pointer-events: none;
+  transition: transform 0.15s linear, font-size 0.15s linear;
+}
+
+.inputControl .counter {
+  pointer-events: none;
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 0.8rem;
+  color: var(--muted-color);
+  margin: 5px;
+}
+
+.inputControl:focus-within {
+  outline: 2px solid var(--primary-color);
+}
+
+.inputControl:focus-within .counter {
+  display: initial;
+}
+
+.inputControl:focus-within label,
+.inputControl:not(.isEmpty) label {
+  transform: translate(8px, -125%);
+  font-size: 0.8rem;
+}
+
+.inputControl input:focus~label {
+  color: var(--primary-color);
+}
+
+.inValid {
+  outline: 1px solid red;
+  margin-bottom: 37px;
+}
+
+.inValid:focus-within {
+  outline: 2px solid red;
+}
+
+.inValid input:focus~label {
+  color: red;
+}
+
+.inValid .errorMsg {
+  display: initial;
+  position: absolute;
+  top: 100%;
+  left: 10px;
+  color: red;
+  font-size: 0.75rem;
+  padding-top: 5px;
+  animation: slideIn 0.3s ease-out 1 forwards;
+  opacity: 0;
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

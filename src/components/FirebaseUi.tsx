@@ -2,10 +2,10 @@
 import './FirebaseUi.css';
 import { useContext, useEffect } from 'react';
 import $firebase from '../apis/firebase';
-import CurrentUser from '../contexts/index.c';
+import { UserProfile } from '../contexts/index.c';
 
 function FirebaseUi() {
-  const user = useContext(CurrentUser);
+  const user = useContext(UserProfile);
 
   useEffect(() => {
     if (!user) {

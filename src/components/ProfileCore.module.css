@@ -25,33 +25,7 @@
 }
 
 .action {
-  font-weight: 700;
-  font-size: clamp(0.6rem, 3vw, 1rem);
-  padding: 0.5em 1em;
-  border-radius: 50vw;
-  cursor: pointer;
   margin-bottom: 1.4em;
-}
-
-.actionEdit {
-  transition: background-color 0.3s ease-out;
-  border: 1px solid var(--muted-light);
-  background-color: white;
-}
-
-.actionFollow {
-  background-color: black;
-  color: white;
-  transition: filter 0.3s ease-out;
-}
-
-
-.actionEdit:hover {
-  background-color: var(--muted-light);
-}
-
-.actionFollow:hover {
-  filter: opacity(.85);
 }
 
 .nameRow {
@@ -76,18 +50,18 @@
   align-items: center;
 
   font-size: 0.95rem;
-  color: var(--muted-color);
 }
 
-.contacts p,
+.contacts a,
 .otherInfo p {
   display: flex;
   align-items: center;
   gap: 5px;
   margin: 5px 0;
+  color: var(--muted-color);
 }
 
-.contacts>p:first-child,
+.contacts>a:first-child,
 .otherInfo>p:first-child {
   margin-right: 13px;
 }
@@ -105,6 +79,64 @@
   color: black;
 }
 
-.contacts p {
+.contacts a {
   gap: 4px;
+  text-decoration: none;
+  position: relative;
+}
+
+.contacts a::after {
+  position: absolute;
+  content: '';
+  width: 100%;
+  height: 1px;
+  background-color: black;
+  left: 50%;
+  bottom: 10%;
+  width: 0;
+  transition: width 0.3s ease-out, left 0.3s ease-out;
+}
+
+.contacts a:hover::after {
+  left: 0;
+  width: 100%;
+}
+
+.invalidUser {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 3vw;
+}
+
+.invalidUser h2 {
+  margin: 0;
+}
+
+.invalidUser p {
+  color: var(--muted-color);
+  font-size: 0.9rem;
+}
+
+.inputElement {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(5px + 1vw);
+  background-color: rgba(0, 0, 0, 0.4);
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.saving {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

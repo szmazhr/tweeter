@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import FirebaseUi from '../components/FirebaseUi';
 import MainFooter from '../components/MainFooter';
 import styles from './Login.module.css';
-import CurrentUser from '../contexts/index.c';
+import { UserProfile } from '../contexts/index.c';
 import LogoImg from '../components/LogoImg';
 
 function Login() {
-  const user = useContext(CurrentUser);
+  const user = useContext(UserProfile);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,6 +18,7 @@ function Login() {
     if (user) {
       navigate('/home');
     }
+    console.log(user);
   }, [user]);
 
   return (
@@ -27,7 +28,7 @@ function Login() {
           <div className={styles.logo} />
           <h1>Happening now</h1>
           <h3>Join Tweeter today.</h3>
-          <FirebaseUi />
+          {user ? '' : <FirebaseUi />}
         </div>
         <div className={styles.thumbnail}>
           <LogoImg />

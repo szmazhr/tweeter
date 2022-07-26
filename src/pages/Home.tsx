@@ -1,9 +1,9 @@
 import { useContext, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import CurrentUser from '../contexts/index.c';
+import { UserProfile } from '../contexts/index.c';
 
 function Main() {
-  const user = useContext(CurrentUser);
+  const user = useContext(UserProfile);
   const navigate = useNavigate();
   const location = useLocation();
 

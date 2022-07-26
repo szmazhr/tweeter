@@ -1,10 +1,10 @@
 import { useContext } from 'react';
 import LinkBtn from '../components/LinkBtn';
-import CurrentUser from '../contexts/index.c';
+import { UserProfile } from '../contexts/index.c';
 import styles from './Error404.module.css';
 
 function Error404() {
-  const user = useContext(CurrentUser);
+  const user = useContext(UserProfile);
 
   return (
     <main className={styles.main}>

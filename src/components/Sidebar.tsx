@@ -9,7 +9,7 @@ import UserImage from './UserImage';
 import UserName from './UserName';
 import UserUserName from './UserUserName';
 import $firebase from '../apis/firebase';
-import CurrentUser from '../contexts/index.c';
+import { UserProfile } from '../contexts/index.c';
 
 const basicOptions = [
   {
@@ -36,7 +36,7 @@ const basicOptions = [
 
 const initialState = {
   label: 'Profile',
-  to: 'szmazhr',
+  to: '/',
   iconA: 'person',
   iconB: 'person-fill',
 };
@@ -48,7 +48,7 @@ const initialState = {
 function Sidebar() {
   const [profileOption, setProfileOption] = useState(initialState);
   const sidebarRef = useRef<HTMLDivElement>(null)!;
-  const user = useContext(CurrentUser);
+  const user = useContext(UserProfile);
 
   const profileClickHandler = () => {
     sidebarRef.current!.toggleAttribute('data-toggle');
@@ -56,7 +56,7 @@ function Sidebar() {
   };
 
   useEffect(() => {
-    setProfileOption((prev) => ({ ...prev, to: 'szmazhr' }));
+    setProfileOption((prev) => ({ ...prev, to: user?.userName! }));
   }, []);
 
   return (
@@ -134,10 +134,10 @@ function Sidebar() {
               onClick={profileClickHandler}
             >
               <div className={styles.userAvatar}>
-                <UserImage userName="sz" />
+                <UserImage imgUrl={user.photoURL} />
               </div>
               <div className={styles.userInfo}>
-                <UserName />
+                <UserName maxLength={15} />
                 <UserUserName />
               </div>
               <div className={styles.action}>

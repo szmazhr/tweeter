@@ -1,26 +1,27 @@
-import { useEffect, useState } from 'react';
+// import { useEffect, useState } from 'react';
+import { ReactNode } from 'react';
 import styles from './UserCoverImage.module.css';
 
 type UserCoverImageProps = {
-  userName: string;
-  className: string;
+  imgUrl?: string;
+  className?: string;
+  children?: ReactNode;
 };
 
-function UserCoverImage({ userName, className }: UserCoverImageProps) {
-  const [imgSrc, setImgSrc] = useState('');
-
-  useEffect(() => {
-    console.log(userName);
-    setImgSrc(
-      'https://pbs.twimg.com/profile_banners/1265060928/1402895323/1500x500'
-    );
-  }, []);
-
+function UserCoverImage({ imgUrl, className, children }: UserCoverImageProps) {
   return (
     <div
       className={`${styles.userCoverImg} ${className}`}
-      style={{ backgroundImage: `url(${imgSrc})` }}
-    />
+      style={imgUrl ? { backgroundImage: `url(${imgUrl})` } : {}}
+    >
+      {children}
+    </div>
   );
 }
 export default UserCoverImage;
+
+UserCoverImage.defaultProps = {
+  imgUrl: '',
+  className: '',
+  children: null,
+};

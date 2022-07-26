@@ -1,10 +1,16 @@
-import Types from '../types/index.t';
+import { useContext } from 'react';
+import { UserProfile } from '../contexts/index.c';
 
-function UserUserName({ userName }: Types.UserName) {
-  return <span>@{userName}</span>;
+type UserUserNameProps = {
+  username?: string;
+};
+
+function UserUserName({ username }: UserUserNameProps) {
+  const currentUser = useContext(UserProfile);
+  return <span>@{username || currentUser?.userName}</span>;
 }
 export default UserUserName;
 
 UserUserName.defaultProps = {
-  userName: 'szmazhr',
+  username: '',
 };
