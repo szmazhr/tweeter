@@ -1,16 +1,18 @@
-import { useContext } from 'react';
-import { UserProfile } from '../contexts/index.c';
 import Types from '../types/index.t';
-import { excerpt } from '../utils/utils';
 
-function UserName({ user, verified, maxLength }: Types.userAsProps) {
-  const currentUser = useContext(UserProfile);
-  const name = user ? user.name : currentUser!.name;
+type UserNameProps = {
+  user: Types.userProfileLocal;
+  verified?: boolean;
+};
+
+function UserName({ user, verified = false }: UserNameProps) {
+  // const loggedInUser = useContext(LoggedInUser);
+  // const name = user ? user.name : loggedInUser?.name;
 
   return (
     <>
-      <span>{maxLength ? excerpt(name!, maxLength) : name} </span>
-      {verified && (user ? user.verified : currentUser?.verified) ? (
+      <span>{user.name}</span>
+      {verified && user.verified ? (
         <i
           data-title="Verified"
           className="bi bi-patch-check-fill"

@@ -2,17 +2,18 @@
 import './FirebaseUi.css';
 import { useContext, useEffect } from 'react';
 import $firebase from '../apis/firebase';
-import { UserProfile } from '../contexts/index.c';
+import { LoggedInUser } from '../contexts/index.c';
 
 function FirebaseUi() {
-  const user = useContext(UserProfile);
+  const loggedInUser = useContext(LoggedInUser);
 
   useEffect(() => {
-    if (!user) {
+    if (!loggedInUser) {
       $firebase.renderUi('#firebaseui-auth-container');
     }
-  }, [user]);
+  }, [loggedInUser]);
 
+  // return <div id="firebaseui-auth-container" />;
   return <div id="firebaseui-auth-container" />;
 }
 export default FirebaseUi;

@@ -1,8 +1,6 @@
-/* eslint-disable no-unused-vars */
-import { useState, Dispatch, SetStateAction, ChangeEvent } from 'react';
+import { useState, ChangeEvent } from 'react';
 import styles from './Input.module.css';
 
-/* eslint-disable no-unused-vars */
 type InputProps = {
   label: string;
   value: string;
@@ -11,6 +9,8 @@ type InputProps = {
   maxLength?: number;
   minLength?: number;
   required?: boolean;
+  lowercase?: boolean;
+  autocomplete?: boolean;
   validate?:
     | [(value: string) => boolean | Promise<boolean>, string][]
     | undefined;
@@ -23,6 +23,8 @@ function Input({
   maxLength,
   required,
   minLength,
+  autocomplete,
+  lowercase,
   type,
   validate,
 }: InputProps) {
@@ -32,7 +34,10 @@ function Input({
   const changeHandler = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const newValue = e.target.value;
+    const newValue = lowercase
+      ? e.target.value.toLocaleLowerCase()
+      : e.target.value;
+
     if (maxLength && newValue.length > maxLength) {
       return;
     }
@@ -40,7 +45,7 @@ function Input({
       setErrorMsg(`${label} can't be blank.`);
     } else if (minLength && newValue.length < minLength) {
       setErrorMsg(`${label} must be at least ${minLength} characters long.`);
-    } else if (validate) {
+    } else if (validate?.length) {
       for (let i = 0; i < validate.length; i += 1) {
         const [validator, validateMessage] = validate[i];
         const result = validator(newValue);
@@ -67,11 +72,6 @@ function Input({
     onChange(newValue);
     setCharCount(newValue.length);
   };
-  /*
-  required: Field can't be blank
-  minLength: Field must be at least X characters long
-  validCharacters: Field must contain only characters from the set of X
-  */
 
   return type === 'textarea' ? (
     <div
@@ -109,6 +109,7 @@ function Input({
         type={type}
         value={value}
         onChange={changeHandler}
+        autoComplete={autocomplete ? 'on' : 'off'}
       />
       <label
         className={styles.label}

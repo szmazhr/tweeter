@@ -8,6 +8,7 @@
     "airbnb",
     "plugin:react/recommended",
     "plugin:react/jsx-runtime",
+    "plugin:@typescript-eslint/recommended",
     "prettier"
   ],
   "parser": "@typescript-eslint/parser",
@@ -20,11 +21,21 @@
   },
   "plugins": [
     "react",
-    "@typescript-eslint",
     "jest",
     "prettier"
   ],
   "rules": {
+    // disable the base rule as it can report incorrect errors
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error"
+    ],
+    "react/require-default-props": [
+      "error",
+      {
+        "functions": "ignore"
+      }
+    ],
     "react/jsx-filename-extension": [
       "warn",
       {

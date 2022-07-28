@@ -6,6 +6,8 @@
   min-height: 100vh;
   padding: 2px 8px;
   width: 90%;
+  position: sticky;
+  top: 0;
 }
 
 .logo {
@@ -73,6 +75,7 @@
   gap: 4px;
   flex: 1;
   text-align: left;
+  max-width: 133px;
 }
 
 .profile button .userInfo :first-child {
@@ -150,6 +153,14 @@
 [data-toggle] .optionBox,
 [data-toggle] .optionBoxBg {
   display: initial;
+}
+
+/* Name Field */
+.userInfo span:first-child {
+  max-width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 @media screen and (max-width: 1265px) {

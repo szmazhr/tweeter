@@ -1,22 +1,27 @@
 import { useContext, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { UserProfile } from '../contexts/index.c';
+import { useNavigate } from 'react-router-dom';
+import Tweets from '../components/Tweets';
+import { LoggedInUser } from '../contexts/index.c';
 
 function Main() {
-  const user = useContext(UserProfile);
+  const loggedInUser = useContext(LoggedInUser);
   const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
     document.title = `Home / Tweeter`;
   }, []);
 
   useEffect(() => {
-    if (!user) {
+    if (!loggedInUser) {
       navigate('/');
     }
-  }, [user]);
+  }, [loggedInUser]);
 
-  return <span>{location.pathname}</span>;
+  return (
+    <>
+      <Tweets />
+      <section>sidebar right</section>
+    </>
+  );
 }
 export default Main;

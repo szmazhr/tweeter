@@ -1,6 +1,15 @@
-import Types from '../types/index.t';
+import { ReactNode } from 'react';
 import Btn from './Btn';
 import styles from './TopBar.module.css';
+
+type TopBarProps = {
+  title: ReactNode;
+  backBtn?: boolean;
+  backBtnClickHandler?: () => void;
+  subTitle?: string;
+  actionBtn?: string;
+  onAction?: () => void;
+};
 
 const isChrome = /Google Inc/.test(navigator.vendor);
 function TopBar({
@@ -10,7 +19,7 @@ function TopBar({
   actionBtn,
   backBtnClickHandler,
   onAction,
-}: Types.TopBarProps) {
+}: TopBarProps) {
   return (
     <header
       className={` ${styles.topBar} ${
@@ -35,7 +44,7 @@ function TopBar({
       {onAction && actionBtn ? (
         <Btn
           label={actionBtn || 'Button'}
-          onClick={onAction!}
+          onClick={onAction}
           type="button"
           btnStyle="dark"
         />

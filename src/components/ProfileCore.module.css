@@ -5,7 +5,7 @@
 
 .personalInfo {
   margin-top: -14%;
-  padding: 20px;
+  padding: 18px;
 }
 
 .rowSB {
@@ -56,9 +56,10 @@
 .otherInfo p {
   display: flex;
   align-items: center;
-  gap: 5px;
   margin: 5px 0;
   color: var(--muted-color);
+  /* gap: 5px;  // Not working in iPhone6*/
+  margin-right: 0.25em;
 }
 
 .contacts>a:first-child,
@@ -68,6 +69,7 @@
 
 .otherInfo p i {
   font-size: 1rem;
+  margin-right: 0.25em;
 }
 
 .contacts {
@@ -76,11 +78,12 @@
 
 .contacts .count {
   font-weight: 700;
+  margin-right: 5px;
   color: black;
 }
 
 .contacts a {
-  gap: 4px;
+  /* gap: 4px; Not working in iPhone 6 */
   text-decoration: none;
   position: relative;
 }
@@ -139,4 +142,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.bio {
+  white-space: pre-line
 }

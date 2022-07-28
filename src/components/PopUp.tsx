@@ -1,6 +1,15 @@
-import Types from '../types/index.t';
+import { ReactNode } from 'react';
 import styles from './PopUp.module.css';
 import TopBar from './TopBar';
+
+type PopUpProps = {
+  children: ReactNode;
+  title: ReactNode;
+  backBtn?: boolean;
+  backBtnClickHandler?: () => void;
+  actionBtn?: string;
+  onAction?: () => void;
+};
 
 function PopUp({
   children,
@@ -9,7 +18,7 @@ function PopUp({
   backBtnClickHandler,
   actionBtn,
   onAction,
-}: Types.PopUpProps) {
+}: PopUpProps) {
   return (
     <section className={styles.container}>
       <div className={styles.box}>
@@ -18,7 +27,7 @@ function PopUp({
           backBtn={backBtn}
           backBtnClickHandler={backBtnClickHandler}
           actionBtn={actionBtn}
-          onAction={onAction!}
+          onAction={onAction}
         />
         <div className={styles.content}>{children}</div>
       </div>

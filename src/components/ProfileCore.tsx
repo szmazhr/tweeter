@@ -7,84 +7,73 @@ import UserName from './UserName';
 import UserUserName from './UserUserName';
 import Btn from './Btn';
 import Types from '../types/index.t';
-import { UserProfile } from '../contexts/index.c';
+import { LoggedInUser } from '../contexts/index.c';
 import PopUp from './PopUp';
 import EditProfile from './EditProfile';
 import $firebase from '../apis/firebase';
 import Loading from './Loading';
+import { getMonthName } from '../utils/utils';
 
 type ProfileCoreProps = {
   type?: 'min' | 'default' | 'full';
-  user: Types.userProfile;
-  url?: string;
+  user: Types.userProfileLocal | null;
+  url?: Types.userProfileLocal['userName'];
 };
 
-const monthNames = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
-
-type followBtnLabelType = 'Follow' | 'Unfollow' | 'Follow Back';
+type FollowBtnLabelType = 'Follow' | 'Unfollow' | 'Follow Back';
 
 function ProfileCore({ type, user, url }: ProfileCoreProps) {
-  const currentUser = useContext(UserProfile);
-  const [joinDate, setJoinDate] = useState<Date>(new Date());
+  const loggedInUser = useContext(LoggedInUser);
   const [followBtnLabel, setIsFollowBtnLabel] =
-    useState<followBtnLabelType>('Follow');
+    useState<FollowBtnLabelType>('Follow');
   const [editProfile, setEditProfile] = useState<boolean>(false);
   const [isEdited, setIsEdited] = useState<boolean>(false);
-  const [draft, setDraft] = useState<Types.userProfile>({});
+  const [draft, setDraft] = useState<Types.userDraft | null>(null);
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [connections, setConnections] = useState<Types.connectionCounter>({
+  const [isNewUser, setIsNewUser] = useState<boolean>(false);
+  const [connections, setConnections] = useState<Types.connections>({
     followers: [],
-    followings: [],
+    following: [],
   });
+  const [joinDate, setJoinDate] = useState(new Date());
   const navigate = useNavigate();
 
   const followBtnClickHandler = () => {
-    if (currentUser) {
-      if (currentUser?.followings?.includes(user?.id!)) {
+    if (loggedInUser && user) {
+      if (loggedInUser?.followings?.includes(user.id)) {
         $firebase.saveUser({
-          followings: currentUser.followings.filter((id) => id !== user?.id),
-        });
+          followings: loggedInUser.followings.filter((id) => id !== user.id),
+        } as Types.userProfile);
       } else {
         $firebase.saveUser({
-          followings: [...currentUser!.followings!, user!.id] as string[],
-        });
+          followings: [...loggedInUser.followings, user.id] as string[],
+        } as Types.userProfile);
       }
     }
   };
 
   const saveUser = () => {
-    setIsSaving(true);
-    $firebase
-      .saveUser(draft)
-      .then(() => {
-        setIsEdited(false);
-        setIsSaving(false);
-        setEditProfile(false);
-        navigate(`/${draft!.userName}`);
-      })
-      // eslint-disable-next-line no-console
-      .catch(console.error);
+    if (draft) {
+      setIsSaving(true);
+      $firebase
+        .saveUser(draft as Types.userDraft)
+        .then(() => {
+          setIsEdited(false);
+          setIsSaving(false);
+          setEditProfile(false);
+          navigate(`/${draft?.userName}`);
+        })
+        // eslint-disable-next-line no-console
+        .catch(console.error);
+    }
   };
 
   useEffect(() => {
-    // console.log({ user: user?.followings, currentUser: currentUser?.followings });
-    if (!!user && !!currentUser && user.id !== currentUser?.id) {
-      if (currentUser?.followings?.includes(user.id!)) {
+    // console.log({ user: user?.followings, loggedInUser: loggedInUser?.followings });
+    if (!!user && !!loggedInUser && user.id !== loggedInUser?.id) {
+      if (loggedInUser?.followings?.includes(user.id)) {
         setIsFollowBtnLabel('Unfollow');
-      } else if (connections.followings?.includes(currentUser?.id!)) {
+      } else if (connections.following?.includes(loggedInUser.id)) {
         setIsFollowBtnLabel('Follow Back');
       } else {
         setIsFollowBtnLabel('Follow');
@@ -93,11 +82,23 @@ function ProfileCore({ type, user, url }: ProfileCoreProps) {
   }, [connections]);
 
   useEffect(() => {
-    $firebase.watchConnections(user?.id!, setConnections);
-    if (!!user && !!user.join) {
-      setJoinDate(new Date(user.join.seconds! * 1000));
+    if (user) {
+      $firebase.watchConnections(user.id, setConnections);
+      setJoinDate(user.createdAt.toDate());
+      if (!user.userName) {
+        setIsNewUser(true);
+      } else {
+        setIsNewUser(false);
+      }
     }
   }, [user]);
+
+  useEffect(() => {
+    if (isNewUser) {
+      setEditProfile(true);
+    }
+  }, [isNewUser]);
+
   return (
     <>
       <UserCoverImage className={styles.coverImg} imgUrl={user?.coverURL} />
@@ -107,7 +108,7 @@ function ProfileCore({ type, user, url }: ProfileCoreProps) {
             <UserImage imgUrl={user?.photoURL} className={styles.userImage} />
           </div>
           {!!user &&
-            (user.userName === currentUser?.userName ? (
+            (user.userName === loggedInUser?.userName ? (
               <Btn
                 label="Edit profile"
                 btnStyle="light"
@@ -141,15 +142,17 @@ function ProfileCore({ type, user, url }: ProfileCoreProps) {
 
         {!!user && type === 'full' ? (
           <div className={styles.otherInfo}>
-            <p>
-              <i className="bi bi-geo-alt" />
-              <span>{user.location}</span>
-            </p>
+            {!!user.location && (
+              <p>
+                <i className="bi bi-geo-alt" />
+                <span>{user.location}</span>
+              </p>
+            )}
             <p>
               <i className="bi bi-calendar3" />
               <span>
-                {`Joined ${monthNames[joinDate!.getMonth()]} 
-                ${joinDate!.getFullYear()}`}
+                {`Joined ${getMonthName(joinDate.getMonth())} 
+                ${joinDate.getFullYear()}`}
               </span>
             </p>
           </div>
@@ -160,7 +163,7 @@ function ProfileCore({ type, user, url }: ProfileCoreProps) {
           <div className={styles.contacts}>
             <Link to={`/${url}/followings`}>
               <span className={styles.count}>
-                {connections.followings.length}
+                {connections.following.length}
               </span>
               <span>Followings </span>
             </Link>
@@ -179,23 +182,23 @@ function ProfileCore({ type, user, url }: ProfileCoreProps) {
           </div>
         )}
       </div>
-      {editProfile && (
+      {editProfile && loggedInUser && (
         <PopUp
-          title="Edit profile"
+          title={isNewUser ? 'Create Account' : 'Edit profile'}
           // eslint-disable-next-line react/jsx-props-no-spreading
           {...(!!isEdited && {
             onAction: saveUser,
             actionBtn: 'Save',
           })}
           // eslint-disable-next-line react/jsx-props-no-spreading
-          {...(!!currentUser?.name &&
-            !!currentUser.userName && {
+          {...(!!loggedInUser?.name &&
+            !isNewUser && {
               backBtn: true,
               backBtnClickHandler: () => setEditProfile(false),
             })}
         >
           <EditProfile
-            user={currentUser}
+            user={loggedInUser}
             edited={setIsEdited}
             setDraft={setDraft}
           />

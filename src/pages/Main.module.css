@@ -8,6 +8,12 @@
 .app .content {
   display: grid;
   grid-template-columns: max-content max-content;
+
+}
+
+.app .content::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
 }
 
 .app .content> :first-child {

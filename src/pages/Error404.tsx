@@ -1,10 +1,10 @@
 import { useContext } from 'react';
 import LinkBtn from '../components/LinkBtn';
-import { UserProfile } from '../contexts/index.c';
+import { LoggedInUser } from '../contexts/index.c';
 import styles from './Error404.module.css';
 
 function Error404() {
-  const user = useContext(UserProfile);
+  const loggedInUser = useContext(LoggedInUser);
 
   return (
     <main className={styles.main}>
@@ -13,7 +13,7 @@ function Error404() {
         Hmm...this page doesn&#039;t exist(yet). Try again after sometime.
       </p>
       <p className={styles.or}>or</p>
-      <LinkBtn to={user ? '/home' : '/'} label="Go Home" />
+      <LinkBtn to={loggedInUser ? '/home' : '/'} label="Go Home" />
     </main>
   );
 }

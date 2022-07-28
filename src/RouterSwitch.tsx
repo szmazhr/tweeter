@@ -6,66 +6,96 @@ import GitHub from './pages/GitHub';
 import Main from './pages/Main';
 import PP from './pages/PP';
 import TOS from './pages/TOS';
-import { UserProfile } from './contexts/index.c';
+import { LoggedInUser } from './contexts/index.c';
 import Home from './pages/Home';
 import styles from './loading.module.css';
 import LogoImg from './components/LogoImg';
 import Profile from './pages/Profile';
+import Error404 from './pages/Error404';
+import Tweets from './components/Tweets';
 
 function RouterSwitch() {
-  const [uid, setUid] = useState<Types.Uid | null>(undefined);
-  const [user, setUser] = useState<Types.userProfile>(undefined);
-  const [loaded, setLoaded] = useState(false);
+  const [firebaseUser, setSetFirebaseUser] = useState<
+    Types.firebaseUser | null | undefined
+  >(undefined);
+  const [user, setUser] = useState<Types.userProfileLocal | undefined | null>(
+    undefined
+  );
 
-  // continuously check for user login status
-  useEffect(() => {
-    $firebase.onAuthStateChanged(setUid);
-  }, []);
-
-  // wait for user to be loaded
-  useEffect(() => {
-    if (uid === undefined) return;
-    if (uid) {
-      $firebase.getCurrentUser(setUser);
-    } else {
-      setUser(null);
-    }
-  }, [uid]);
-
-  // wait until it is confirm either user logged in or not
   useEffect(() => {
     /*
-     * *----Possible states----*
-     * 1. unknown login status (uid is undefined, user is null)
-     * 2. user logged in (uid is defined but user is undefined -> not loaded yet)
-     * 3. user logged in (uid is defined and user is defined -> loaded) // now we can render the app
+     * *---- (Observe Logged in State & get Uid) ----*
+     * This is the first time the app is loaded.
+     * We need to get the user's uid from the firebase auth.
+     * If the user is not logged in uid will be null.
      */
+    $firebase.onAuthStateChanged(setSetFirebaseUser);
+  }, []);
 
-    if (!loaded && user !== undefined && uid !== undefined) {
-      setLoaded(true);
+  useEffect(() => {
+    //* stop if login state is not set
+    if (firebaseUser === undefined) return;
+
+    if (firebaseUser === null) {
+      //* if user is not logged in, set user to null
+      setUser(null);
+      return;
     }
-  }, [user]);
+    if (firebaseUser) {
+      /*
+       * *---- logged in ----*
+       * We need to get the user's profile from the firebase database.
+       * If user is not in the database, we will create new account.
+       * And watch for changes in the user's profile.
+       * We then need to set the user's profile in the context.
+       */
+      $firebase.watchCurrentUser(setUser);
+    }
+  }, [firebaseUser]);
 
-  return !loaded ? (
+  return user === undefined ? (
     <div className={styles.container}>
+      {/* Wait, if login state is not set */}
       <LogoImg />
     </div>
   ) : (
     <BrowserRouter>
-      <UserProfile.Provider value={user}>
+      <LoggedInUser.Provider value={user}>
         <Routes>
           <Route path="/" element={<Main />}>
             <Route path="/home" element={<Home />} />
+            <Route path="/hashtag/:hashTag" element={<Home />} />
             <Route path="/explore" element={<Home />} />
             <Route path="/notifications" element={<Home />} />
             <Route path="/messages" element={<Home />} />
-            <Route path="/:username" element={<Profile />} />
+            <Route path="/:username" element={<Profile />}>
+              <Route index element={<Tweets />} />
+              <Route
+                path="/:username/with_replies"
+                element={<div>With Tweets</div>}
+              />
+              <Route path="/:username/media" element={<div>Media</div>} />
+              <Route path="/:username/likes" element={<div>Likes</div>} />
+              <Route
+                path="/:username/followers"
+                element={<div>followers</div>}
+              />
+              <Route
+                path="/:username/followings"
+                element={<div>followings</div>}
+              />
+              <Route
+                path="/:username/followings"
+                element={<div>followings</div>}
+              />
+            </Route>
           </Route>
           <Route path="/terms-of-service" element={<TOS />} />
           <Route path="/privacy-policy" element={<PP />} />
           <Route path="/github" element={<GitHub />} />
+          <Route path="*" element={<Error404 />} />
         </Routes>
-      </UserProfile.Provider>
+      </LoggedInUser.Provider>
     </BrowserRouter>
   );
 }

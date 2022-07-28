@@ -3,6 +3,7 @@ import 'firebase/compat/firestore';
 import 'firebase/compat/storage';
 import * as firebaseui from 'firebaseui';
 import { Dispatch, SetStateAction } from 'react';
+import UserProfile from '../classes/UserProfile';
 import Types from '../types/index.t';
 
 const $firebase = (() => {
@@ -49,14 +50,13 @@ const $firebase = (() => {
         fullLabel: 'Continue with Phone',
         defaultCountry: 'IN',
       },
-      'anonymous',
     ],
     callbacks: {
       signInSuccessWithAuthResult: () => {
         // User successfully signed in.
         // Return type determines whether we continue the redirect automatically
         // or whether we leave that to developer to handle.
-        return true;
+        return false;
       },
     },
     tosUrl: '/terms-of-service',
@@ -82,36 +82,50 @@ const $firebase = (() => {
       });
   };
 
-  // singing state observer
-  const onAuthStateChanged = (callback: Types.setUidCallback) => {
-    auth.onAuthStateChanged((_user) => {
-      if (_user) {
-        callback(_user.uid);
-        // User is signed in.
+  // Auth state observer
+  const onAuthStateChanged = (
+    callback: Dispatch<SetStateAction<Types.firebaseUser | null | undefined>>
+  ) => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        callback(user);
       } else {
-        callback(_user);
+        callback(null);
       }
     });
     return true;
   };
 
+  const getUser = async (uid: string) => {
+    const userRef = db.collection('users').doc(uid);
+    const user = await userRef.get();
+    return { ...user.data(), id: user.id } as Types.userProfileLocal;
+  };
+
   // get user data
-  const getCurrentUser = (
-    callback: Dispatch<SetStateAction<Types.userProfile>>
+  const watchCurrentUser = (
+    callback: Dispatch<
+      SetStateAction<Types.userProfileLocal | undefined | null>
+    >
   ) => {
-    db.collection('users')
-      .doc(auth.currentUser?.uid)
-      .onSnapshot((doc) => {
-        callback({ ...doc.data(), id: doc.id });
-      });
+    const userRef = db.collection('users').doc(auth.currentUser?.uid);
+    userRef.onSnapshot((doc) => {
+      if (!doc.exists) {
+        const newUser = new UserProfile({
+          createdAt: firebase.firestore.Timestamp.now(),
+        } as Types.userProfile);
+        userRef.set({ ...newUser });
+      }
+      callback({ ...doc.data(), id: doc.id } as Types.userProfileLocal);
+    });
   };
 
   // get Profile
-  const getProfile = async (
+  const getProfileByUid = async (
     uid: string | undefined = auth.currentUser?.uid
   ) => {
     const profile = await db.collection('users').doc(uid).get();
-    return { ...profile.data(), id: profile.id };
+    return { ...profile.data(), id: profile.id } as Types.userProfileLocal;
   };
 
   const getProfileByUsername = async (username: string) => {
@@ -120,7 +134,10 @@ const $firebase = (() => {
       .where('userName', '==', username)
       .get();
     return profile.docs.length > 0
-      ? { ...profile.docs[0].data(), id: profile.docs[0].id }
+      ? ({
+          ...profile.docs[0].data(),
+          id: profile.docs[0].id,
+        } as Types.userProfileLocal)
       : null;
   };
 
@@ -134,29 +151,28 @@ const $firebase = (() => {
     );
   };
 
-  const uploadImage = (file: File, location: string = 'images') => {
+  const uploadImage = (file: File, location = 'images') => {
     const fileRef = storageRef.child(`${location}/${file.name}`);
     return fileRef.put(file).then((snapshot) => {
       return snapshot.ref.getDownloadURL();
     });
   };
 
-  const saveUser = async (user: Types.userProfile) => {
+  const saveUser = async (draft: Types.userDraft) => {
     const userRef = db.collection('users').doc(auth.currentUser?.uid);
-    return userRef.update(user!);
+    return userRef.update(draft);
   };
 
   const watchConnections = (
     uid: string,
-    // eslint-disable-next-line no-unused-vars
-    callback: Dispatch<SetStateAction<Types.connectionCounter>>
+    callback: Dispatch<SetStateAction<Types.connections>>
   ) => {
     db.collection('users')
       .doc(uid)
       .onSnapshot((doc) => {
         const data = doc.data();
         if (data) {
-          callback((prev) => ({ ...prev, followings: data.followings }));
+          callback((prev) => ({ ...prev, following: data.followings }));
         }
       });
     db.collection('users')
@@ -167,17 +183,67 @@ const $firebase = (() => {
       });
   };
 
+  const getAllTweets = () => {
+    // eslint-disable-next-line no-console
+    return db
+      .collection('tweets')
+      .get()
+      .then((snapshot) => {
+        return snapshot.docs.map(
+          (doc) =>
+            ({
+              ...doc.data(),
+              id: doc.id,
+            } as Types.postData)
+        );
+      });
+  };
+
+  const getTweetsByUid = (uid: string) => {
+    return db
+      .collection('tweets')
+      .where('author', '==', uid)
+      .get()
+      .then((snapshot) => {
+        return snapshot.docs.map((doc) => {
+          return {
+            ...doc.data(),
+            id: doc.id,
+          } as Types.postData;
+        });
+      });
+  };
+
+  const getTweetsByHashTag = (hashTag: string) => {
+    return db
+      .collection('tweets')
+      .where('hashTags', 'array-contains', hashTag)
+      .get()
+      .then((snapshot) => {
+        return snapshot.docs.map(
+          (doc) =>
+            ({
+              ...doc.data(),
+              id: doc.id,
+            } as Types.postData)
+        );
+      });
+  };
   return {
     renderUi,
     signOut,
     onAuthStateChanged,
-    getProfile,
+    getProfileByUid,
     getProfileByUsername,
     uploadImage,
     saveUser,
-    getCurrentUser,
+    watchCurrentUser,
     isUsernameExist,
     watchConnections,
+    getAllTweets,
+    getTweetsByUid,
+    getTweetsByHashTag,
+    getUser,
   };
 })();
 

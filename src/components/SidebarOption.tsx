@@ -2,7 +2,11 @@ import { NavLink } from 'react-router-dom';
 import Types from '../types/index.t';
 import styles from './SidebarOption.module.css';
 
-function SidebarOption({ option }: Types.SidebarOptionProps) {
+export type SidebarOptionProps = {
+  option: Types.SidebarOption;
+};
+
+function SidebarOption({ option }: SidebarOptionProps) {
   return (
     <NavLink
       className={({ isActive }) =>

@@ -16,13 +16,13 @@ import UserCoverImage from './UserCoverImage';
 import UserImage from './UserImage';
 
 type EditProfileProps = {
-  user: Types.userProfile;
+  user: Types.userProfileLocal;
   edited: Dispatch<SetStateAction<boolean>>;
-  setDraft: Dispatch<SetStateAction<Types.userProfile>>;
+  setDraft: Dispatch<SetStateAction<Types.userDraft | null>>;
 };
 
 function reducer(
-  state: Types.userProfile,
+  state: Types.userDraft,
   action: { key: string; value: string }
 ) {
   return { ...state, [action.key]: action.value };
@@ -30,12 +30,12 @@ function reducer(
 
 function EditProfile({ user, edited, setDraft }: EditProfileProps) {
   const initialState = {
-    bio: user?.bio,
-    coverURL: user?.coverURL,
-    location: user?.location,
-    name: user?.name,
-    photoURL: user?.photoURL,
-    userName: user?.userName,
+    bio: user.bio,
+    coverURL: user.coverURL,
+    location: user.location,
+    name: user.name,
+    photoURL: user.photoURL,
+    userName: user.userName,
   };
 
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -165,10 +165,16 @@ function EditProfile({ user, edited, setDraft }: EditProfileProps) {
           maxLength={14}
           minLength={4}
           required
+          lowercase
+          autocomplete={false}
           validate={[
             [
               isValidUsername,
               'Username must only contain letters, numbers, and underscores.',
+            ],
+            [
+              (value) => value.trim() !== 'profile',
+              `Username can't be 'profile'`,
             ],
             [$firebase.isUsernameExist, 'Username already exists.'],
           ]}

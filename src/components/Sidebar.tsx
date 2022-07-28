@@ -9,7 +9,8 @@ import UserImage from './UserImage';
 import UserName from './UserName';
 import UserUserName from './UserUserName';
 import $firebase from '../apis/firebase';
-import { UserProfile } from '../contexts/index.c';
+import { LoggedInUser } from '../contexts/index.c';
+import Types from '../types/index.t';
 
 const basicOptions = [
   {
@@ -36,27 +37,29 @@ const basicOptions = [
 
 const initialState = {
   label: 'Profile',
-  to: '/',
+  to: '/profile',
   iconA: 'person',
   iconB: 'person-fill',
 };
 
-// type sidebarRefType = {
-//   current: HTMLDivElement;
-// };
-
 function Sidebar() {
   const [profileOption, setProfileOption] = useState(initialState);
-  const sidebarRef = useRef<HTMLDivElement>(null)!;
-  const user = useContext(UserProfile);
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const loggedInUser = useContext(LoggedInUser);
 
   const profileClickHandler = () => {
-    sidebarRef.current!.toggleAttribute('data-toggle');
-    console.log(sidebarRef);
+    if (sidebarRef.current) {
+      sidebarRef.current.toggleAttribute('data-toggle');
+    }
   };
 
   useEffect(() => {
-    setProfileOption((prev) => ({ ...prev, to: user?.userName! }));
+    if (loggedInUser) {
+      setProfileOption((prev) => ({
+        ...prev,
+        to: loggedInUser.userName || 'profile',
+      }));
+    }
   }, []);
 
   return (
@@ -64,7 +67,7 @@ function Sidebar() {
       <div className={styles.sidebarMobile} />
       <div className={styles.sidebar}>
         {/* twitter icon */}
-        <div className={`${styles.options} ${!user ? styles.out : ''}`}>
+        <div className={`${styles.options} ${!loggedInUser ? styles.out : ''}`}>
           <div className={styles.sidebarItems}>
             <Link className={styles.logo} to="/">
               <LogoImg />
@@ -72,7 +75,7 @@ function Sidebar() {
           </div>
 
           {/* Basic options */}
-          {user ? (
+          {loggedInUser ? (
             <>
               <nav className={`${styles.sidebarItems} ${styles.basicAction}`}>
                 {basicOptions.map((option) => {
@@ -98,13 +101,13 @@ function Sidebar() {
             </>
           ) : (
             <nav className={`${styles.sidebarItems} ${styles.basicAction}`}>
-              {[basicOptions.find((option) => option.label === 'Explore')!].map(
+              {[basicOptions.find((option) => option.label === 'Explore')].map(
                 (option) => {
-                  const slug = convertToSlug(option.label);
+                  const slug = convertToSlug(option?.label || 'explore');
                   return (
                     <SidebarOption
                       key={slug}
-                      option={{ ...option, to: slug }}
+                      option={{ ...option, to: slug } as Types.SidebarOption}
                     />
                   );
                 }
@@ -113,7 +116,7 @@ function Sidebar() {
           )}
         </div>
         {/* UserAction options */}
-        {user ? (
+        {loggedInUser ? (
           <div className={styles.profile}>
             <div
               className={styles.optionBoxBg}
@@ -124,7 +127,7 @@ function Sidebar() {
               <li>
                 <button type="button" onClick={$firebase.signOut}>
                   <span>Log Out</span>
-                  <UserUserName />
+                  <UserUserName username={loggedInUser.userName || 'newUser'} />
                 </button>
               </li>
             </div>
@@ -134,11 +137,11 @@ function Sidebar() {
               onClick={profileClickHandler}
             >
               <div className={styles.userAvatar}>
-                <UserImage imgUrl={user.photoURL} />
+                <UserImage imgUrl={loggedInUser.photoURL} />
               </div>
               <div className={styles.userInfo}>
-                <UserName maxLength={15} />
-                <UserUserName />
+                <UserName user={loggedInUser} />
+                <UserUserName username={loggedInUser.userName || 'newUser'} />
               </div>
               <div className={styles.action}>
                 <i className="bi bi-three-dots" />

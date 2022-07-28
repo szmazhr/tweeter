@@ -1,7 +1,7 @@
+/* eslint-disable import/prefer-default-export */
 import { createContext } from 'react';
 import Types from '../types/index.t';
 
-const FirebaseUser = createContext<Types.Uid>(undefined);
-const UserProfile = createContext<Types.userProfile | null>(null);
+const LoggedInUser = createContext<Types.userProfileLocal | null>(null);
 
-export { FirebaseUser, UserProfile };
+export { LoggedInUser };
