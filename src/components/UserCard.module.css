@@ -1,0 +1,58 @@
+.container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  gap: 15px;
+  padding: .8vw;
+  cursor: pointer;
+}
+
+.container:hover {
+  background-color: var(--muted-lightest);
+}
+
+.avatar {
+  height: 50px;
+  width: 50px;
+}
+
+.textContent {
+  flex: 1;
+}
+
+.header {
+  display: flex;
+}
+
+.userInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: flex-start;
+}
+
+.name {
+  text-decoration: none;
+  color: black;
+  font-weight: 700;
+}
+
+.name:hover {
+  text-decoration: underline;
+}
+
+.username {
+  color: var(--muted-color);
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bio {
+  padding: 0;
+  margin: 10px auto;
+}

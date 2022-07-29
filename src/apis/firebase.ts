@@ -151,11 +151,10 @@ const $firebase = (() => {
     );
   };
 
-  const uploadImage = (file: File, location = 'images') => {
+  const uploadImage = async (file: File, location = 'images') => {
     const fileRef = storageRef.child(`${location}/${file.name}`);
-    return fileRef.put(file).then((snapshot) => {
-      return snapshot.ref.getDownloadURL();
-    });
+    const snapshot = await fileRef.put(file);
+    return snapshot.ref.getDownloadURL();
   };
 
   const saveUser = async (draft: Types.userDraft) => {
@@ -229,6 +228,15 @@ const $firebase = (() => {
         );
       });
   };
+
+  const getUsersByUids = (docId: string[]) => {
+    const users = docId.map(async (id) => {
+      const doc = await db.collection('users').doc(id).get();
+      return { ...doc.data(), id: doc.id } as Types.userProfileLocal;
+    });
+    return Promise.all(users);
+  };
+
   return {
     renderUi,
     signOut,
@@ -244,6 +252,7 @@ const $firebase = (() => {
     getTweetsByUid,
     getTweetsByHashTag,
     getUser,
+    getUsersByUids,
   };
 })();
 

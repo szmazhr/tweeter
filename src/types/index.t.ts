@@ -21,6 +21,8 @@ declare namespace Types {
     userName: string;
   };
 
+  export type btnStyles = 'primary' | 'dark' | 'light' | 'light-danger';
+
   // ---- Props Helper ------------------------------------------------------------------------------------------------------------------
   export type SidebarOption = {
     label: string;

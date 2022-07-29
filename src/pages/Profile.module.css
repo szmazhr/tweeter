@@ -1,0 +1,13 @@
+.errMsg {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.errContainer {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}

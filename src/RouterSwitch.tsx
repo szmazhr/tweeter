@@ -13,6 +13,7 @@ import LogoImg from './components/LogoImg';
 import Profile from './pages/Profile';
 import Error404 from './pages/Error404';
 import Tweets from './components/Tweets';
+import Connections from './components/Connections';
 
 function RouterSwitch() {
   const [firebaseUser, setSetFirebaseUser] = useState<
@@ -76,18 +77,8 @@ function RouterSwitch() {
               />
               <Route path="/:username/media" element={<div>Media</div>} />
               <Route path="/:username/likes" element={<div>Likes</div>} />
-              <Route
-                path="/:username/followers"
-                element={<div>followers</div>}
-              />
-              <Route
-                path="/:username/followings"
-                element={<div>followings</div>}
-              />
-              <Route
-                path="/:username/followings"
-                element={<div>followings</div>}
-              />
+              <Route path="/:username/followers" element={<Connections />} />
+              <Route path="/:username/following" element={<Connections />} />
             </Route>
           </Route>
           <Route path="/terms-of-service" element={<TOS />} />

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
@@ -63,7 +64,7 @@ function Tweets() {
   return (
     <main>
       <div>Tweets</div>
-      {postsData && <PostWrapper postData={postsData[0]} />}
+      {/* {postsData?.length > 0 && <PostWrapper postData={postsData[0]} />} */}
     </main>
   );
 }

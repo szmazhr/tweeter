@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react';
 import $firebase from '../apis/firebase';
 import Types from '../types/index.t';
@@ -37,29 +38,30 @@ function PostWrapper({ postData }: { postData: Types.postData }) {
   }, []);
 
   return (
-    <article className={styles.postContainer}>
-      <div className={styles.postHeader}>
-        <div className={styles.photoWrapper}>
-          <UserImage imgUrl={post.photoURL} />
-        </div>
-        <div className={styles.postHeaderInfo}>
-          <h3>{post.name}</h3>
-          <h4>{post.username}</h4>
-          <p>{post.timeAgo}</p>
-        </div>
-      </div>
-      <div className={styles.postBody}>
-        <p>{post.text}</p>
-      </div>
-      <div className={styles.postFooter}>
-        <div className={styles.postFooterInfo} />
-        <div className={styles.postFooterActions}>
-          <p>Like</p>
-          <p>Comment</p>
-          <p>Share</p>
-        </div>
-      </div>
-    </article>
+    <div>Post Wrapper</div>
+    // <article className={styles.postContainer}>
+    //   <div className={styles.postHeader}>
+    //     <div className={styles.photoWrapper}>
+    //       <UserImage imgUrl={post.photoURL} />
+    //     </div>
+    //     <div className={styles.postHeaderInfo}>
+    //       <h3>{post.name}</h3>
+    //       <h4>{post.username}</h4>
+    //       <p>{post.timeAgo}</p>
+    //     </div>
+    //   </div>
+    //   <div className={styles.postBody}>
+    //     <p>{post.text}</p>
+    //   </div>
+    //   <div className={styles.postFooter}>
+    //     <div className={styles.postFooterInfo} />
+    //     <div className={styles.postFooterActions}>
+    //       <p>Like</p>
+    //       <p>Comment</p>
+    //       <p>Share</p>
+    //     </div>
+    //   </div>
+    // </article>
   );
 }
 export default PostWrapper;

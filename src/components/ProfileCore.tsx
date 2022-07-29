@@ -13,44 +13,26 @@ import EditProfile from './EditProfile';
 import $firebase from '../apis/firebase';
 import Loading from './Loading';
 import { getMonthName } from '../utils/utils';
+import FollowBtn from './FollowBtn';
 
 type ProfileCoreProps = {
   type?: 'min' | 'default' | 'full';
   user: Types.userProfileLocal | null;
   url?: Types.userProfileLocal['userName'];
+  connections: Types.connections;
 };
 
-type FollowBtnLabelType = 'Follow' | 'Unfollow' | 'Follow Back';
-
-function ProfileCore({ type, user, url }: ProfileCoreProps) {
+function ProfileCore({ type, user, url, connections }: ProfileCoreProps) {
   const loggedInUser = useContext(LoggedInUser);
-  const [followBtnLabel, setIsFollowBtnLabel] =
-    useState<FollowBtnLabelType>('Follow');
+
   const [editProfile, setEditProfile] = useState<boolean>(false);
   const [isEdited, setIsEdited] = useState<boolean>(false);
   const [draft, setDraft] = useState<Types.userDraft | null>(null);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isNewUser, setIsNewUser] = useState<boolean>(false);
-  const [connections, setConnections] = useState<Types.connections>({
-    followers: [],
-    following: [],
-  });
+
   const [joinDate, setJoinDate] = useState(new Date());
   const navigate = useNavigate();
-
-  const followBtnClickHandler = () => {
-    if (loggedInUser && user) {
-      if (loggedInUser?.followings?.includes(user.id)) {
-        $firebase.saveUser({
-          followings: loggedInUser.followings.filter((id) => id !== user.id),
-        } as Types.userProfile);
-      } else {
-        $firebase.saveUser({
-          followings: [...loggedInUser.followings, user.id] as string[],
-        } as Types.userProfile);
-      }
-    }
-  };
 
   const saveUser = () => {
     if (draft) {
@@ -69,21 +51,7 @@ function ProfileCore({ type, user, url }: ProfileCoreProps) {
   };
 
   useEffect(() => {
-    // console.log({ user: user?.followings, loggedInUser: loggedInUser?.followings });
-    if (!!user && !!loggedInUser && user.id !== loggedInUser?.id) {
-      if (loggedInUser?.followings?.includes(user.id)) {
-        setIsFollowBtnLabel('Unfollow');
-      } else if (connections.following?.includes(loggedInUser.id)) {
-        setIsFollowBtnLabel('Follow Back');
-      } else {
-        setIsFollowBtnLabel('Follow');
-      }
-    }
-  }, [connections]);
-
-  useEffect(() => {
     if (user) {
-      $firebase.watchConnections(user.id, setConnections);
       setJoinDate(user.createdAt.toDate());
       if (!user.userName) {
         setIsNewUser(true);
@@ -116,12 +84,7 @@ function ProfileCore({ type, user, url }: ProfileCoreProps) {
                 onClick={() => setEditProfile(true)}
               />
             ) : (
-              <Btn
-                label={followBtnLabel}
-                btnStyle="dark"
-                className={styles.action}
-                onClick={followBtnClickHandler}
-              />
+              <FollowBtn uid={user.id} />
             ))}
         </div>
         <div className={styles.nameRow}>
@@ -161,7 +124,7 @@ function ProfileCore({ type, user, url }: ProfileCoreProps) {
         )}
         {!!user && (
           <div className={styles.contacts}>
-            <Link to={`/${url}/followings`}>
+            <Link to={`/${url}/following`}>
               <span className={styles.count}>
                 {connections.following.length}
               </span>

@@ -1,17 +1,48 @@
 import { useContext, useEffect, useState } from 'react';
-import { Outlet, useNavigate, useParams } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import $firebase from '../apis/firebase';
+import LinkBtn from '../components/LinkBtn';
 import Loading from '../components/Loading';
-import NavLinksUnderProfile from '../components/NavLinksUnderProfile';
 import ProfileCore from '../components/ProfileCore';
+import TabBtns from '../components/TabBtns';
 import TopBar from '../components/TopBar';
 import UserName from '../components/UserName';
 import { LoggedInUser } from '../contexts/index.c';
 import Types from '../types/index.t';
+import styles from './Profile.module.css';
+
+const links = [
+  {
+    path: '',
+    label: 'Tweets',
+  },
+  {
+    path: '/with_replies',
+    label: 'Tweets & replies',
+  },
+  {
+    path: '/media',
+    label: 'Media',
+  },
+  {
+    path: '/likes',
+    label: 'Likes',
+  },
+];
 
 function Profile() {
   const { username } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [connections, setConnections] = useState<Types.connections>({
+    followers: [],
+    following: [],
+  });
+  const pathNameLower = location.pathname.toLowerCase();
+  const profileLinks = links.map((link) => ({
+    path: `${username}${link.path}`,
+    label: link.label,
+  }));
 
   /**
    * undefined: initialState
@@ -23,6 +54,15 @@ function Profile() {
   );
 
   const loggedInUser = useContext(LoggedInUser);
+
+  useEffect(() => {
+    /**
+     * Get the users connection.
+     */
+    if (user) {
+      $firebase.watchConnections(user.id, setConnections);
+    }
+  }, [user]);
 
   useEffect(() => {
     /**
@@ -40,6 +80,8 @@ function Profile() {
       } else {
         navigate('/');
       }
+    } else if (username === loggedInUser?.userName) {
+      setUser(loggedInUser);
     } else if (username) {
       /**
        * Get the user profile from the database.
@@ -50,27 +92,56 @@ function Profile() {
   return (
     <>
       <main>
-        {user === undefined ? (
+        {user === undefined && (
           <>
             <TopBar title="Profile" backBtn />
             <Loading />
           </>
-        ) : (
-          <>
-            <TopBar
-              title={user?.name ? <UserName user={user} verified /> : 'Profile'}
-              subTitle={user ? '0 tweet' : ''}
-              backBtn
-            />
-            <ProfileCore user={user} url={username} type="full" />
-            {!!user && !!username && (
-              <>
-                <NavLinksUnderProfile username={user.userName} />
-                <Outlet context={user} />
-              </>
-            )}
-          </>
         )}
+        {user !== undefined &&
+          (pathNameLower === `/${username}/following` ||
+          pathNameLower === `/${username}/followers` ? (
+            <>
+              <TopBar
+                title={user?.name ? <UserName user={user} verified /> : ''}
+                subTitle={`@${username}`}
+                backBtn
+                backBtnClickHandler={() => navigate(`/${username}`)}
+              />
+              <Outlet context={connections} />
+              {!user && (
+                <div className={styles.errContainer}>
+                  <div className={styles.errMsg}>
+                    <p>Something went wrong...</p>
+                    <LinkBtn label={`visit @${username}`} to={`/${username}`} />
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <TopBar
+                title={
+                  user?.name ? <UserName user={user} verified /> : 'Profile'
+                }
+                subTitle={user ? '0 tweet' : ''}
+                backBtn
+                backBtnClickHandler={() => navigate('/')}
+              />
+              <ProfileCore
+                user={user}
+                url={username}
+                connections={connections}
+                type="full"
+              />
+              {!!user && !!username && (
+                <>
+                  <TabBtns links={profileLinks} />
+                  <Outlet context={user} />
+                </>
+              )}
+            </>
+          ))}
       </main>
       <section>sidebar right</section>
     </>

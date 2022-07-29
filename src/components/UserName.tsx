@@ -11,7 +11,7 @@ function UserName({ user, verified = false }: UserNameProps) {
 
   return (
     <>
-      <span>{user.name}</span>
+      <span>{user.name} </span>
       {verified && user.verified ? (
         <i
           data-title="Verified"
