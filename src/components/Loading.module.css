@@ -44,6 +44,44 @@
 
 }
 
+/* .container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+
+} */
+
+.container img {
+  animation: fadeInOut 1s ease-in-out infinite alternate;
+}
+
+.large {
+  height: 100vh;
+}
+
+.large img {
+  max-width: 200px;
+  width: 100%;
+  padding: 20px;
+}
+
+.large .circle {
+  --border-width: 3px;
+  height: 150px;
+  width: 150px;
+}
+
+@keyframes fadeInOut {
+  from {
+    opacity: 0.1;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);

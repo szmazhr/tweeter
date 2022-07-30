@@ -25,13 +25,9 @@ function FollowBtn({ uid }: { uid: string }) {
   const clickHandler = () => {
     if (loggedInUser && uid) {
       if (loggedInUser?.followings?.includes(uid)) {
-        $firebase.saveUser({
-          followings: loggedInUser.followings.filter((id) => id !== uid),
-        } as Types.userProfile);
+        $firebase.removeFollowing(uid);
       } else {
-        $firebase.saveUser({
-          followings: [...loggedInUser.followings, uid] as string[],
-        } as Types.userProfile);
+        $firebase.addFollowing(uid);
       }
     }
   };

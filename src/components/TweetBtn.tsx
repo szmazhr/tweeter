@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import styles from './TweetBtn.module.css';
 
 type TweetBtnProps = {
@@ -6,7 +7,9 @@ type TweetBtnProps = {
 };
 
 function TweetBtn({ type, action }: TweetBtnProps) {
-  console.log(action);
+  useEffect(() => {
+    console.log(action);
+  }, [type, action]);
   return (
     <button className={`${styles.tweetBtn} ${styles[type]}`} type="button">
       <i className="bi bi-pencil-square" />

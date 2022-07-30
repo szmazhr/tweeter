@@ -102,22 +102,69 @@ const $firebase = (() => {
     return { ...user.data(), id: user.id } as Types.userProfileLocal;
   };
 
+  const activeUser: {
+    unSubscriber: () => void;
+  } = {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    unSubscriber: () => {},
+  };
+
+  const addUserToIndex = async (uid: Types.userProfileLocal['id']) => {
+    const userRef = db.collection('explicitIndex').doc('users');
+    userRef.update({
+      uids: firebase.firestore.FieldValue.arrayUnion(uid),
+    });
+  };
+
+  const getIndex = async (item: 'uids') => {
+    const userRef = db.collection('explicitIndex').doc('users');
+    const user = await userRef.get();
+    const data = user.data();
+    return data ? data[item] : [];
+  };
+
+  const addFollowing = async (uid: Types.userProfileLocal['id']) => {
+    const currentUserId = auth.currentUser?.uid;
+    if (currentUserId) {
+      const userRef = db.collection('users').doc(currentUserId);
+      userRef.update({
+        followings: firebase.firestore.FieldValue.arrayUnion(uid),
+      });
+    }
+  };
+
+  const removeFollowing = async (uid: Types.userProfileLocal['id']) => {
+    const currentUserId = auth.currentUser?.uid;
+    if (currentUserId) {
+      const userRef = db.collection('users').doc(currentUserId);
+      userRef.update({
+        followings: firebase.firestore.FieldValue.arrayRemove(uid),
+      });
+    }
+  };
+
   // get user data
   const watchCurrentUser = (
     callback: Dispatch<
       SetStateAction<Types.userProfileLocal | undefined | null>
     >
   ) => {
-    const userRef = db.collection('users').doc(auth.currentUser?.uid);
-    userRef.onSnapshot((doc) => {
-      if (!doc.exists) {
+    const uid = auth.currentUser?.uid;
+    const userRef = db.collection('users').doc(uid);
+    activeUser.unSubscriber();
+    const unSubscriber = userRef.onSnapshot((doc) => {
+      if (!doc.exists && uid) {
+        addUserToIndex(uid);
         const newUser = new UserProfile({
-          createdAt: firebase.firestore.Timestamp.now(),
+          name: auth.currentUser?.displayName || '',
+          photoURL: auth.currentUser?.photoURL || '',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         } as Types.userProfile);
         userRef.set({ ...newUser });
       }
       callback({ ...doc.data(), id: doc.id } as Types.userProfileLocal);
     });
+    activeUser.unSubscriber = unSubscriber;
   };
 
   // get Profile
@@ -141,6 +188,17 @@ const $firebase = (() => {
       : null;
   };
 
+  const getAllUsers = async () => {
+    const users = await db.collection('users').get();
+    return users.docs.map(
+      (doc) =>
+        ({
+          ...doc.data(),
+          id: doc.id,
+        } as Types.userProfileLocal)
+    );
+  };
+
   const isUsernameExist = async (username: string) => {
     const profile = await db
       .collection('users')
@@ -162,71 +220,81 @@ const $firebase = (() => {
     return userRef.update(draft);
   };
 
-  const watchConnections = (
+  const activeConnections: {
+    UnSubFollowers: () => void;
+    UnSubFollowing: () => void;
+  } = {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    UnSubFollowers: () => {},
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    UnSubFollowing: () => {},
+  };
+
+  const watchConnections = async (
     uid: string,
     callback: Dispatch<SetStateAction<Types.connections>>
   ) => {
-    db.collection('users')
+    activeConnections.UnSubFollowers();
+    activeConnections.UnSubFollowing();
+    const followers = db
+      .collection('users')
       .doc(uid)
       .onSnapshot((doc) => {
         const data = doc.data();
         if (data) {
-          callback((prev) => ({ ...prev, following: data.followings }));
+          callback((prev) => {
+            return { ...prev, following: data.followings };
+          });
         }
       });
-    db.collection('users')
+    const followings = db
+      .collection('users')
       .where('followings', 'array-contains', uid)
       .onSnapshot((doc) => {
-        // console.log({ foll: doc.docs.map((d) => d.id) });
-        callback((prev) => ({ ...prev, followers: doc.docs.map((d) => d.id) }));
-      });
-  };
-
-  const getAllTweets = () => {
-    // eslint-disable-next-line no-console
-    return db
-      .collection('tweets')
-      .get()
-      .then((snapshot) => {
-        return snapshot.docs.map(
-          (doc) =>
-            ({
-              ...doc.data(),
-              id: doc.id,
-            } as Types.postData)
-        );
-      });
-  };
-
-  const getTweetsByUid = (uid: string) => {
-    return db
-      .collection('tweets')
-      .where('author', '==', uid)
-      .get()
-      .then((snapshot) => {
-        return snapshot.docs.map((doc) => {
-          return {
-            ...doc.data(),
-            id: doc.id,
-          } as Types.postData;
+        callback((prev) => {
+          return { ...prev, followers: doc.docs.map((d) => d.id) };
         });
       });
+    activeConnections.UnSubFollowers = followers;
+    activeConnections.UnSubFollowing = followings;
   };
 
-  const getTweetsByHashTag = (hashTag: string) => {
-    return db
+  const getAllTweets = async () => {
+    const snapshot = await db.collection('tweets').get();
+    return snapshot.docs.map(
+      (doc) =>
+        ({
+          ...doc.data(),
+          id: doc.id,
+        } as Types.postData)
+    );
+  };
+
+  const getTweetsByUid = async (uid: string) => {
+    const snapshot = await db
+      .collection('tweets')
+      .where('author', '==', uid)
+      .get();
+    return snapshot.docs.map((doc) => {
+      return {
+        ...doc.data(),
+        id: doc.id,
+      } as Types.postData;
+    });
+  };
+
+  const getTweetsByHashTag = async (hashTag: string) => {
+    const snapshot = await db
       .collection('tweets')
       .where('hashTags', 'array-contains', hashTag)
-      .get()
-      .then((snapshot) => {
-        return snapshot.docs.map(
-          (doc) =>
-            ({
-              ...doc.data(),
-              id: doc.id,
-            } as Types.postData)
-        );
-      });
+      .get();
+    return snapshot.docs.map(
+      (doc) =>
+        ({
+          ...doc.data(),
+          id: doc.id,
+        } as Types.postData)
+    );
   };
 
   const getUsersByUids = (docId: string[]) => {
@@ -238,21 +306,25 @@ const $firebase = (() => {
   };
 
   return {
+    onAuthStateChanged,
     renderUi,
     signOut,
-    onAuthStateChanged,
-    getProfileByUid,
-    getProfileByUsername,
     uploadImage,
     saveUser,
+    addFollowing,
     watchCurrentUser,
     isUsernameExist,
     watchConnections,
+    removeFollowing,
+    getProfileByUid,
+    getProfileByUsername,
     getAllTweets,
     getTweetsByUid,
     getTweetsByHashTag,
     getUser,
     getUsersByUids,
+    getIndex,
+    getAllUsers,
   };
 })();
 

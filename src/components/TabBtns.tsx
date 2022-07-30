@@ -17,7 +17,7 @@ function TabBtns({ links }: TabBtnsProps) {
           className={({ isActive }) =>
             isActive ? `${styles.active} ${styles.navLink}` : styles.navLink
           }
-          to={path ? `/${path}` : ''}
+          to={path ? `/${path}` : '/'}
         >
           <span>{label}</span>
         </NavLink>

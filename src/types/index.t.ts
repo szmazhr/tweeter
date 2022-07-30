@@ -8,6 +8,7 @@ declare namespace Types {
   export type userProfile = UserProfile;
   export type userProfileLocal = userProfile & { id: firebaseUser['uid'] };
   export type connections = {
+    id: userProfileLocal['id'];
     following: string[];
     followers: string[];
   };

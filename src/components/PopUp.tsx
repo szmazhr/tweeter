@@ -5,7 +5,6 @@ import TopBar from './TopBar';
 type PopUpProps = {
   children: ReactNode;
   title: ReactNode;
-  backBtn?: boolean;
   backBtnClickHandler?: () => void;
   actionBtn?: string;
   onAction?: () => void;
@@ -14,7 +13,6 @@ type PopUpProps = {
 function PopUp({
   children,
   title,
-  backBtn,
   backBtnClickHandler,
   actionBtn,
   onAction,
@@ -24,7 +22,6 @@ function PopUp({
       <div className={styles.box}>
         <TopBar
           title={title}
-          backBtn={backBtn}
           backBtnClickHandler={backBtnClickHandler}
           actionBtn={actionBtn}
           onAction={onAction}

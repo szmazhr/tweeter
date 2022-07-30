@@ -6,25 +6,28 @@ import UserCard from './UserCard';
 import styles from './UserList.module.css';
 
 type UserListProps = {
-  ids: string[];
+  ids: string[] | null;
   onEmpty?: ReactNode;
   followBtn?: boolean;
+  type?: 'min' | 'default' | 'full';
 };
 
-function UserList({ ids, onEmpty, followBtn }: UserListProps) {
+function UserList({ ids, onEmpty, followBtn, type }: UserListProps) {
   const [users, setUsers] = useState<Types.userProfileLocal[] | undefined>(
     undefined
   );
 
   useEffect(() => {
-    $firebase.getUsersByUids(ids).then(setUsers);
-  }, []);
+    if (ids) {
+      $firebase.getUsersByUids(ids).then(setUsers);
+    }
+  }, [ids]);
 
   return (
     <section className={styles.userList}>
       {!users ? <Loading /> : users.length === 0 && onEmpty}
       {users?.map((user) => (
-        <UserCard key={user.id} user={user} followBtn={followBtn} />
+        <UserCard key={user.id} user={user} type={type} followBtn={followBtn} />
       ))}
     </section>
   );

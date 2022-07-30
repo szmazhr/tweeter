@@ -8,12 +8,12 @@ import PP from './pages/PP';
 import TOS from './pages/TOS';
 import { LoggedInUser } from './contexts/index.c';
 import Home from './pages/Home';
-import styles from './loading.module.css';
-import LogoImg from './components/LogoImg';
 import Profile from './pages/Profile';
 import Error404 from './pages/Error404';
 import Tweets from './components/Tweets';
 import Connections from './components/Connections';
+import Loading from './components/Loading';
+import Connect from './pages/Connect';
 
 function RouterSwitch() {
   const [firebaseUser, setSetFirebaseUser] = useState<
@@ -30,6 +30,7 @@ function RouterSwitch() {
      * We need to get the user's uid from the firebase auth.
      * If the user is not logged in uid will be null.
      */
+    // setSetFirebaseUser(undefined);
     $firebase.onAuthStateChanged(setSetFirebaseUser);
   }, []);
 
@@ -55,9 +56,9 @@ function RouterSwitch() {
   }, [firebaseUser]);
 
   return user === undefined ? (
-    <div className={styles.container}>
+    <div className="">
       {/* Wait, if login state is not set */}
-      <LogoImg />
+      <Loading size="large" />
     </div>
   ) : (
     <BrowserRouter>
@@ -69,6 +70,7 @@ function RouterSwitch() {
             <Route path="/explore" element={<Home />} />
             <Route path="/notifications" element={<Home />} />
             <Route path="/messages" element={<Home />} />
+            <Route path="/connect_people" element={<Connect />} />
             <Route path="/:username" element={<Profile />}>
               <Route index element={<Tweets />} />
               <Route

@@ -10,7 +10,8 @@ html {
   --primary-color-light: #1d9cf0a2;
   --muted-color: #536471;
   --muted-light: rgba(15, 20, 25, 0.1);
-  --muted-lightest: rgba(22, 30, 37, 0.04);
+  --muted-lightest: rgba(15, 20, 25, 0.04);
+  --white-dim: #f2f5f7;
 }
 
 html {

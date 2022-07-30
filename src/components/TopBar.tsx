@@ -4,7 +4,6 @@ import styles from './TopBar.module.css';
 
 type TopBarProps = {
   title: ReactNode;
-  backBtn?: boolean;
   backBtnClickHandler?: () => void;
   subTitle?: string;
   actionBtn?: string;
@@ -13,7 +12,6 @@ type TopBarProps = {
 
 const isChrome = /Google Inc/.test(navigator.vendor);
 function TopBar({
-  backBtn,
   title,
   subTitle,
   actionBtn,
@@ -26,7 +24,7 @@ function TopBar({
         isChrome ? styles.backdrop : styles.others
       }`}
     >
-      {backBtn ? (
+      {backBtnClickHandler ? (
         <button
           type="button"
           className={styles.backBtn}

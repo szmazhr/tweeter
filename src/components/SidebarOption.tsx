@@ -12,7 +12,7 @@ function SidebarOption({ option }: SidebarOptionProps) {
       className={({ isActive }) =>
         isActive ? `${styles.active} ${styles.navLink}` : styles.navLink
       }
-      to={option.to}
+      to={`${option.to}`}
     >
       <i className={`bi bi-${option.iconA} ${styles.active}`} />
       <i className={`bi bi-${option.iconB} ${styles.inActive}`} />

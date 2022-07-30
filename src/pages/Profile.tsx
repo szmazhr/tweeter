@@ -1,9 +1,11 @@
 import { useContext, useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import $firebase from '../apis/firebase';
+import ConnectWidget from '../components/ConnectWidget';
 import LinkBtn from '../components/LinkBtn';
 import Loading from '../components/Loading';
 import ProfileCore from '../components/ProfileCore';
+import Search from '../components/Search';
 import TabBtns from '../components/TabBtns';
 import TopBar from '../components/TopBar';
 import UserName from '../components/UserName';
@@ -13,7 +15,7 @@ import styles from './Profile.module.css';
 
 const links = [
   {
-    path: '',
+    path: '/',
     label: 'Tweets',
   },
   {
@@ -35,6 +37,7 @@ function Profile() {
   const navigate = useNavigate();
   const location = useLocation();
   const [connections, setConnections] = useState<Types.connections>({
+    id: '',
     followers: [],
     following: [],
   });
@@ -59,7 +62,8 @@ function Profile() {
     /**
      * Get the users connection.
      */
-    if (user) {
+    if (user && user.id !== connections.id) {
+      setConnections((prev) => ({ ...prev, id: user.id }));
       $firebase.watchConnections(user.id, setConnections);
     }
   }, [user]);
@@ -94,7 +98,7 @@ function Profile() {
       <main>
         {user === undefined && (
           <>
-            <TopBar title="Profile" backBtn />
+            <TopBar title="Profile" backBtnClickHandler={() => navigate('/')} />
             <Loading />
           </>
         )}
@@ -105,7 +109,6 @@ function Profile() {
               <TopBar
                 title={user?.name ? <UserName user={user} verified /> : ''}
                 subTitle={`@${username}`}
-                backBtn
                 backBtnClickHandler={() => navigate(`/${username}`)}
               />
               <Outlet context={connections} />
@@ -125,7 +128,6 @@ function Profile() {
                   user?.name ? <UserName user={user} verified /> : 'Profile'
                 }
                 subTitle={user ? '0 tweet' : ''}
-                backBtn
                 backBtnClickHandler={() => navigate('/')}
               />
               <ProfileCore
@@ -143,7 +145,10 @@ function Profile() {
             </>
           ))}
       </main>
-      <section>sidebar right</section>
+      <section>
+        <Search />
+        <ConnectWidget title="You might like" />
+      </section>
     </>
   );
 }

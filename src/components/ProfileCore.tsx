@@ -51,7 +51,7 @@ function ProfileCore({ type, user, url, connections }: ProfileCoreProps) {
   };
 
   useEffect(() => {
-    if (user) {
+    if (user?.createdAt) {
       setJoinDate(user.createdAt.toDate());
       if (!user.userName) {
         setIsNewUser(true);

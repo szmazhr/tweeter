@@ -14,7 +14,7 @@ function Main() {
   useEffect(() => {
     if (username && isValidUsername(username) && /[A-Z]/.test(username)) {
       const restUrl = location.pathname.split(/[\W]+/, 3)[2];
-      navigate(`/${username.toLocaleLowerCase()}/${restUrl}`);
+      navigate(`/${username.toLocaleLowerCase()}/${restUrl}/`);
     }
   }, []);
 

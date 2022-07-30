@@ -1,9 +1,13 @@
 import styles from './Loading.module.css';
 import LogoImg from './LogoImg';
 
-function Loading() {
+type LoadingProps = {
+  size?: 'large' | 'default';
+};
+
+function Loading({ size }: LoadingProps) {
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${size && styles[size]} `}>
       <div className={styles.circle}>
         <LogoImg />
       </div>

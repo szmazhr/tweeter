@@ -25,7 +25,6 @@
 }
 
 .app .content> :last-child {
-  background-color: darkcyan;
   width: 400px;
 }
 
