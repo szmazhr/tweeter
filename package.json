@@ -2,6 +2,7 @@
   "name": "twitter-clone",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://szmazhr.github.io/tweeter/",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
@@ -13,6 +14,7 @@
     "bootstrap-icons": "^1.9.1",
     "firebase": "^9.9.0",
     "firebaseui": "^6.0.1",
+    "gh-pages": "^4.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",

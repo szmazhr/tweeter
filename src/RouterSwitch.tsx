@@ -61,7 +61,7 @@ function RouterSwitch() {
       <Loading size="large" />
     </div>
   ) : (
-    <BrowserRouter>
+    <BrowserRouter basename="/tweeter">
       <LoggedInUser.Provider value={user}>
         <Routes>
           <Route path="/" element={<Main />}>
