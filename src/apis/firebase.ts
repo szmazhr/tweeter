@@ -120,7 +120,6 @@ const $firebase = (() => {
     const userRef = db.collection('explicitIndex').doc('users');
     const user = await userRef.get();
     const data = user.data();
-    console.log(data);
     return data ? data[item] : [];
   };
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import $firebase from '../apis/firebase';
@@ -21,7 +22,7 @@ function Connect() {
   useEffect(() => {
     if (allUid) {
       const exclude = loggedInUser ? [loggedInUser.id] : [];
-      setFilteredUid(getRandom(allUid, Infinity, [], exclude, false));
+      setFilteredUid(getRandom(allUid, Infinity, [], exclude, true));
     }
   }, [allUid]);
 

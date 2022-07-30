@@ -55,5 +55,16 @@
     "eslint-plugin-react": "^7.30.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "prettier": "^2.7.1"
+  },
+  "description": "Clone of very famous Social Media Platform, Twitter. Another assignment from [theOdinProject](https://www.theodinproject.com/lessons/node-path-javascript-javascript-final-project).",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/szmazhr/tweeter.git"
+  },
+  "author": "Shahzar Mazhar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/szmazhr/tweeter/issues"
   }
 }

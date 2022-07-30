@@ -17,7 +17,7 @@ function ConnectWidget({ title }: { title: string }) {
 
   useEffect(() => {
     if (allUid) {
-      const include = ['YkSV1g5kHoYMul2oetfFwARXGuZ2'];
+      const include = ['SobuLGeP8JeG7hBw3SZTYX5CRvH3'];
       const exclude = loggedInUser
         ? [loggedInUser.id, ...loggedInUser.followings]
         : [];

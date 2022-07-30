@@ -76,8 +76,8 @@ function timeAgo(timestamp: Types.timestamp) {
  * @param min min number to return default is 1
  * @returns random number between min and max
  */
-function getRandomNum(max: number, min = 1) {
-  return Math.floor(Math.random() * (max - min) + min);
+function getRandomNum(max: number, min = 0) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 /**
@@ -99,14 +99,16 @@ function getRandom<T>(
   const arrLength = arr.length;
 
   const newArr: T[] = [];
-  if (conflictInclude) {
-    newArr.push(...includes);
-  } else {
-    const newInclude = includes.filter((item) => !excludes.includes(item));
-    newArr.push(...newInclude);
+  if (includes.length) {
+    if (conflictInclude) {
+      newArr.push(...includes);
+    } else {
+      const newInclude = includes.filter((item) => !excludes.includes(item));
+      newArr.push(...newInclude);
+    }
   }
   while (newArr.length < len && newArr.length < arrLength - excludes.length) {
-    const newValue = arr[getRandomNum(arrLength)];
+    const newValue = arr[getRandomNum(arrLength - 1)];
     if (!newArr.includes(newValue) && !excludes?.includes(newValue)) {
       newArr.push(newValue);
     }
