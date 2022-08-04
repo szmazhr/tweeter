@@ -1,0 +1,92 @@
+.postContainer {
+  display: flex;
+  flex-direction: column;
+  padding: calc(2px + 0.5vw) calc(5px + 1vw);
+  border-bottom: 1px solid var(--muted-light);
+  cursor: pointer;
+  transition: background-color 0.3s ease-out;
+}
+
+.postContainer:hover {
+  background-color: var(--muted-lightest);
+}
+
+.row_top {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  position: relative;
+}
+
+.col_left {
+  width: 50px;
+  height: 50px;
+}
+
+.col_right {
+  flex: 1;
+}
+
+.row_bottom {
+  display: flex;
+}
+
+.postHeaderInfo {
+  display: flex;
+
+}
+
+.postHeaderInfo h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.avatar {
+  position: relative;
+}
+
+.postHeaderInfo .name {
+  font-weight: 700;
+  text-decoration: none;
+  color: black;
+}
+
+.postHeaderInfo .name:hover {
+  text-decoration: underline;
+}
+
+.postHeaderInfo .username {
+  margin-left: 0.5rem;
+  text-decoration: none;
+}
+
+.postHeaderInfo .username,
+.postHeaderInfo .time {
+  color: var(--muted-color);
+  font-size: 0.9rem;
+}
+
+.postHeaderInfo .time::before {
+  content: "•";
+  margin: 0 0.5rem;
+}
+
+.postBody {
+  margin: 0.4rem 0;
+}
+
+.postBody p {
+  margin: 0;
+}
+
+.postBody .text {
+  font-size: 0.95rem;
+}
+
+
+.row_bottom {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}

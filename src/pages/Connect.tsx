@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import $firebase from '../apis/firebase';
 import ConnectWidget from '../components/ConnectWidget';
+import Search from '../components/Search';
 import TopBar from '../components/TopBar';
 import UserList from '../components/UserList';
 import { LoggedInUser } from '../contexts/index.c';
@@ -38,6 +39,7 @@ function Connect() {
         <UserList ids={filteredUid} followBtn />
       </main>
       <section>
+        <Search />
         <ConnectWidget title="You might like" />
       </section>
     </>

@@ -18,19 +18,16 @@ import PostWrapper from './PostWrapper';
 
 function Tweets() {
   const { hashTag } = useParams();
-  const [postsData, setPostsData] = useState<Types.postData[] | undefined>(
+  const [postsData, setPostsData] = useState<Types.postDataLocal[] | undefined>(
     undefined
   );
   const user = useOutletContext<Types.userProfileLocal>();
 
-  const addUserDataToPost = (_postsData: Types.postData[]) => {
+  const addUserDataToPost = (_postsData: Types.postDataLocal[]) => {
     if (user) {
-      const { userName, name, photoURL } = user;
       const newData = _postsData.map((post) => ({
         ...post,
-        userName,
-        name,
-        photoURL,
+        author: user,
       }));
       setPostsData(newData);
     }
@@ -63,8 +60,9 @@ function Tweets() {
 
   return (
     <main>
-      <div>Tweets</div>
-      {/* {postsData?.length > 0 && <PostWrapper postData={postsData[0]} />} */}
+      {postsData &&
+        postsData?.length > 0 &&
+        postsData.map((post) => <PostWrapper key={post.id} postData={post} />)}
     </main>
   );
 }

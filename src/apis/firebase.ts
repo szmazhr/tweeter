@@ -3,6 +3,7 @@ import 'firebase/compat/firestore';
 import 'firebase/compat/storage';
 import * as firebaseui from 'firebaseui';
 import { Dispatch, SetStateAction } from 'react';
+import Tweet from '../classes/Tweet';
 import UserProfile from '../classes/UserProfile';
 import Types from '../types/index.t';
 
@@ -74,7 +75,7 @@ const $firebase = (() => {
       .auth()
       .signOut()
       .then(() => {
-        window.location.assign('/');
+        window.location.assign('/tweeter');
       })
       .catch((error) => {
         // eslint-disable-next-line no-console
@@ -143,7 +144,20 @@ const $firebase = (() => {
     }
   };
 
-  // get user data
+  // const transferImage = async (url: string) => {
+  //   const res = await fetch(url, { mode: 'no-cors' });
+  //   const blob = await res.blob();
+  //   const ref = storageRef.child(
+  //     `${auth.currentUser?.uid}/photo/${Date.now()},${blob.type}`
+  //   );
+  //   const snapshot = await ref.put(blob);
+  //   return snapshot.ref.getDownloadURL();
+  // };
+
+  /**
+   * function to watch for changes in the loggedIn user's profile
+   * @param callback - callback function to be called when user is updated
+   */
   const watchCurrentUser = (
     callback: Dispatch<
       SetStateAction<Types.userProfileLocal | undefined | null>
@@ -152,12 +166,15 @@ const $firebase = (() => {
     const uid = auth.currentUser?.uid;
     const userRef = db.collection('users').doc(uid);
     activeUser.unSubscriber();
-    const unSubscriber = userRef.onSnapshot((doc) => {
+    const unSubscriber = userRef.onSnapshot(async (doc) => {
       if (!doc.exists && uid) {
         addUserToIndex(uid);
+        // const photoURL = auth.currentUser?.photoURL
+        //   ? await transferImage(auth.currentUser.photoURL)
+        //   : '';
         const newUser = new UserProfile({
           name: auth.currentUser?.displayName || '',
-          photoURL: auth.currentUser?.photoURL || '',
+          photoURL: '',
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         } as Types.userProfile);
         userRef.set({ ...newUser });
@@ -175,6 +192,11 @@ const $firebase = (() => {
     return { ...profile.data(), id: profile.id } as Types.userProfileLocal;
   };
 
+  /**
+   * function to get the profile of user by their username
+   * @param username - username of the user to be searched
+   * @returns - user profile of the user with the given username if found else null
+   */
   const getProfileByUsername = async (username: string) => {
     const profile = await db
       .collection('users')
@@ -188,6 +210,11 @@ const $firebase = (() => {
       : null;
   };
 
+  /**
+   * function to get the profile of all the users
+   * @returns - array of
+   * this is hack is used to simulate the search
+   */
   const getAllUsers = async () => {
     const users = await db.collection('users').get();
     return users.docs.map(
@@ -199,6 +226,11 @@ const $firebase = (() => {
     );
   };
 
+  /**
+   * function to check if username is taken
+   * @param username - username to be checked
+   * @returns - true if username is taken else false
+   */
   const isUsernameExist = async (username: string) => {
     const profile = await db
       .collection('users')
@@ -209,12 +241,24 @@ const $firebase = (() => {
     );
   };
 
+  /**
+   * function to upload image to firebase storage
+   * @param file - file to be uploaded
+   * @param location - location to be uploaded to
+   * @returns - url of the image uploaded
+   */
   const uploadImage = async (file: File, location = 'images') => {
-    const fileRef = storageRef.child(`${location}/${file.name}`);
+    const fileRef = storageRef.child(
+      `${auth.currentUser?.uid}/${location}/${file.name}`
+    );
     const snapshot = await fileRef.put(file);
     return snapshot.ref.getDownloadURL();
   };
 
+  /**
+   * function to update the profile of the loggedIn user
+   * @param draft - object containing the updated profile details
+   */
   const saveUser = async (draft: Types.userDraft) => {
     const userRef = db.collection('users').doc(auth.currentUser?.uid);
     return userRef.update(draft);
@@ -230,6 +274,13 @@ const $firebase = (() => {
     UnSubFollowing: () => {},
   };
 
+  /**
+   * function to watch for changes in the loggedIn user's connections
+   * calls unsubscribe on the previous subscription
+   * @param uid - user id of the user to be watched
+   * @param callback - callback function to be called when user is updated
+   * save the unsubscribe function in the activeConnections object
+   */
   const watchConnections = async (
     uid: string,
     callback: Dispatch<SetStateAction<Types.connections>>
@@ -259,41 +310,80 @@ const $firebase = (() => {
     activeConnections.UnSubFollowing = followings;
   };
 
+  const getFollowersCount = async (uid: string) => {
+    const followers = await db
+      .collection('users')
+      .where('followings', 'array-contains', uid)
+      .get();
+    return followers.size;
+  };
+
+  const postNewTweet = async (text: string) => {
+    const uid = auth.currentUser?.uid;
+    const tweet = new Tweet({
+      text,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    } as Types.postData);
+    db.collection(`users/${uid}/tweets`).add({ ...tweet });
+
+    const userRef = db.collection('users').doc(uid);
+    userRef.update({
+      tweetCount: firebase.firestore.FieldValue.increment(1),
+    });
+  };
+
   const getAllTweets = async () => {
-    const snapshot = await db.collection('tweets').get();
-    return snapshot.docs.map(
-      (doc) =>
-        ({
+    const snapshot = await db
+      .collectionGroup('tweets')
+      .orderBy('createdAt', 'desc')
+      .get();
+    return Promise.all(
+      snapshot.docs.map(async (doc) => {
+        const res = await doc.ref.parent.parent?.get();
+        const parent = {
+          ...res?.data(),
+          id: res?.id,
+        } as Types.userProfileLocal;
+        return {
           ...doc.data(),
           id: doc.id,
-        } as Types.postData)
+          author: parent,
+        } as Types.postDataLocal;
+      })
     );
   };
 
   const getTweetsByUid = async (uid: string) => {
     const snapshot = await db
-      .collection('tweets')
-      .where('author', '==', uid)
+      .collection(`users/${uid}/tweets`)
+      .orderBy('createdAt', 'desc')
       .get();
     return snapshot.docs.map((doc) => {
       return {
         ...doc.data(),
         id: doc.id,
-      } as Types.postData;
+      } as Types.postDataLocal;
     });
   };
 
   const getTweetsByHashTag = async (hashTag: string) => {
     const snapshot = await db
-      .collection('tweets')
-      .where('hashTags', 'array-contains', hashTag)
+      .collectionGroup('tweets')
+      .where('hashTags', 'array-contains', `#${hashTag.toLocaleLowerCase()}`)
       .get();
-    return snapshot.docs.map(
-      (doc) =>
-        ({
+    return Promise.all(
+      snapshot.docs.map(async (doc) => {
+        const res = await doc.ref.parent.parent?.get();
+        const parent = {
+          ...res?.data(),
+          id: res?.id,
+        } as Types.userProfileLocal;
+        return {
           ...doc.data(),
           id: doc.id,
-        } as Types.postData)
+          author: parent,
+        } as Types.postDataLocal;
+      })
     );
   };
 
@@ -325,6 +415,8 @@ const $firebase = (() => {
     getUsersByUids,
     getIndex,
     getAllUsers,
+    getFollowersCount,
+    postNewTweet,
   };
 })();
 

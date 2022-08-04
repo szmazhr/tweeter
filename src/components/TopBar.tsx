@@ -5,6 +5,7 @@ import styles from './TopBar.module.css';
 type TopBarProps = {
   title: ReactNode;
   backBtnClickHandler?: () => void;
+  backBtn?: ReactNode;
   subTitle?: string;
   actionBtn?: string;
   onAction?: () => void;
@@ -15,6 +16,7 @@ function TopBar({
   title,
   subTitle,
   actionBtn,
+  backBtn,
   backBtnClickHandler,
   onAction,
 }: TopBarProps) {
@@ -24,17 +26,17 @@ function TopBar({
         isChrome ? styles.backdrop : styles.others
       }`}
     >
-      {backBtnClickHandler ? (
-        <button
-          type="button"
-          className={styles.backBtn}
-          onClick={backBtnClickHandler}
-        >
-          <i className="bi bi-arrow-left-short" data-icon="backBtn" />
-        </button>
-      ) : (
-        ''
-      )}
+      {backBtnClickHandler
+        ? backBtn || (
+            <button
+              type="button"
+              className={styles.backBtn}
+              onClick={backBtnClickHandler}
+            >
+              <i className="bi bi-arrow-left-short" data-icon="backBtn" />
+            </button>
+          )
+        : ''}
       <div className={styles.titles}>
         <span className={styles.title}>{title}</span>
         {subTitle ? <span className={styles.subTitle}>{subTitle}</span> : ''}
@@ -43,7 +45,7 @@ function TopBar({
         <Btn
           label={actionBtn || 'Button'}
           onClick={onAction}
-          type="button"
+          type="submit"
           btnStyle="dark"
         />
       ) : (

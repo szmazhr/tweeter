@@ -1,67 +1,67 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react';
-import $firebase from '../apis/firebase';
+import { Link } from 'react-router-dom';
 import Types from '../types/index.t';
-import { hasAllProperties, timeAgo } from '../utils/utils';
+import { timeAgo } from '../utils/utils';
+import IconBtn from './IconBtn';
+import PostText from './PostText';
 import styles from './PostWrapper.module.css';
 import UserImage from './UserImage';
+import UserName from './UserName';
+import UserUserName from './UserUserName';
 
-function PostWrapper({ postData }: { postData: Types.postData }) {
+function PostWrapper({ postData }: { postData: Types.postDataLocal }) {
   const [post, setPost] = useState(postData);
-
-  useEffect(() => {
-    if (!hasAllProperties(post, 'userName', 'name', 'photoURL')) {
-      $firebase
-        .getProfileByUid(post.author)
-        .then((user) => {
-          if (user) {
-            setPost((_post) => ({
-              ..._post,
-              name: user.name,
-              username: user.userName,
-              photoURL: user.photoURL,
-            }));
-          } else {
-            throw new Error('User not found');
-          }
-        })
-        .catch(console.error);
-    }
-  }, []);
 
   useEffect(() => {
     setPost((_post) => ({
       ..._post,
       timeAgo: timeAgo(post.createdAt),
     }));
-    console.log(timeAgo(post.createdAt));
   }, []);
 
   return (
-    <div>Post Wrapper</div>
-    // <article className={styles.postContainer}>
-    //   <div className={styles.postHeader}>
-    //     <div className={styles.photoWrapper}>
-    //       <UserImage imgUrl={post.photoURL} />
-    //     </div>
-    //     <div className={styles.postHeaderInfo}>
-    //       <h3>{post.name}</h3>
-    //       <h4>{post.username}</h4>
-    //       <p>{post.timeAgo}</p>
-    //     </div>
-    //   </div>
-    //   <div className={styles.postBody}>
-    //     <p>{post.text}</p>
-    //   </div>
-    //   <div className={styles.postFooter}>
-    //     <div className={styles.postFooterInfo} />
-    //     <div className={styles.postFooterActions}>
-    //       <p>Like</p>
-    //       <p>Comment</p>
-    //       <p>Share</p>
-    //     </div>
-    //   </div>
-    // </article>
+    // <div>Post Wrapper</div>
+    <article className={styles.postContainer}>
+      <div className={styles.row_top}>
+        <div className={styles.col_left}>
+          <div className={styles.avatar}>
+            <UserImage imgUrl={post.author.photoURL} />
+          </div>
+        </div>
+        <div className={styles.col_right}>
+          <div className={styles.postHeader}>
+            <div className={styles.postHeaderInfo}>
+              <Link to={post.author.userName} className={styles.name}>
+                <UserName user={post.author} verified />
+              </Link>
+              <Link to={post.author.userName} className={styles.username}>
+                <UserUserName username={post.author.userName} />
+              </Link>
+              <span className={styles.time}>{post.timeAgo}</span>
+            </div>
+          </div>
+          <div className={styles.postBody}>
+            <PostText className={styles.text} text={post.text} />
+          </div>
+        </div>
+      </div>
+      <div className={`${styles.row_bottom}`}>
+        <IconBtn icon="chat" label="Reply" onClick={() => undefined} />
+        <IconBtn
+          icon="arrow-repeat"
+          label="Retweet"
+          onClick={() => undefined}
+          color="#00ba7c"
+        />
+        <IconBtn
+          icon="heart"
+          label="Like"
+          color="#f91880"
+          onClick={() => undefined}
+        />
+        <IconBtn icon="upload" label="Share" onClick={() => undefined} />
+      </div>
+    </article>
   );
 }
 export default PostWrapper;

@@ -127,7 +127,13 @@ function Profile() {
                 title={
                   user?.name ? <UserName user={user} verified /> : 'Profile'
                 }
-                subTitle={user ? '0 tweet' : ''}
+                subTitle={
+                  user
+                    ? `${user.tweetCount || 0} tweet${
+                        user.tweetCount > 1 ? 's' : ''
+                      }`
+                    : ''
+                }
                 backBtnClickHandler={() => navigate('/')}
               />
               <ProfileCore

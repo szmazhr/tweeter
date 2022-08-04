@@ -163,6 +163,59 @@
   white-space: nowrap;
 }
 
+.BtnOpenEditor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  gap: 1em;
+  font-size: 1.2rem;
+  text-decoration: none;
+  border-radius: 50vh;
+  transition: background-color 0.3s ease-out;
+  color: rgb(255, 255, 255);
+  font-weight: 700;
+  background-color: var(--primary-color);
+  padding: 1rem;
+  width: 100%;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.BtnOpenEditor:hover {
+  filter: brightness(0.9);
+}
+
+.BtnOpenEditor i {
+  font-size: 1.5rem;
+  display: none;
+}
+
+@media screen and (min-width: 701px) {
+
+  .tweetEditor {
+    top: 5vh;
+    /* max-height: 300px; */
+    height: max-content !important;
+  }
+
+}
+
+@media screen and (max-width: 1265px) {
+  .BtnOpenEditor {
+    width: 50px;
+    height: 50px;
+  }
+
+  .BtnOpenEditor span {
+    display: none;
+  }
+
+  .BtnOpenEditor i {
+    display: initial;
+  }
+}
+
 @media screen and (max-width: 1265px) {
   .optionBox::before {
     left: 32px;
@@ -201,13 +254,14 @@
     margin-bottom: 60px;
   }
 
-  .tweetBtn button {
+  .BtnOpenEditor {
     width: 60px;
     height: 60px;
   }
 
-  .tweetBtn button i {
+  .BtnOpenEditor i {
     font-size: 1.6rem;
+
   }
 
   .profile {

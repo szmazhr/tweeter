@@ -1,0 +1,62 @@
+.container {
+  display: flex;
+  color: var(--muted-color);
+  align-items: center;
+}
+
+.btn {
+  height: 35px;
+  width: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 50%;
+  border: none;
+  position: relative;
+  cursor: pointer;
+  color: var(--muted-color);
+  background-color: transparent;
+  transition: color 0.1s ease-out;
+}
+
+.btn i {
+  display: flex;
+  font-size: 1.1rem;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.icon::before {
+  /* position: absolute; */
+}
+
+.container:hover,
+.container:hover .btn {
+  color: var(--primary-color);
+}
+
+.counter {
+  font-size: 0.8rem;
+  margin-left: 0.2rem;
+  transition: color 0.1s ease-out;
+}
+
+.btn .hover_effect {
+  position: absolute;
+  opacity: 0;
+  height: 100%;
+  width: 100%;
+  border-radius: inherit;
+  transition: opacity 0.1s ease-out;
+  background: linear-gradient(rgba(255, 255, 255, .9), rgba(255, 255, 255, .9)), linear-gradient(var(--primary-color), var(--primary-color))
+}
+
+.btn:hover .hover_effect {
+  opacity: 1;
+}
+
+.editor {
+  color: var(--primary-color);
+}

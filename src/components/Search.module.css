@@ -1,7 +1,7 @@
 .widget {
   margin: 10px 20px;
   position: relative;
-  z-index: 99999;
+  z-index: 101;
 }
 
 .search {

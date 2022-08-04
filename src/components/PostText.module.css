@@ -1,0 +1,12 @@
+.oneLine {
+  min-height: 1.45em;
+}
+
+.oneLine a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.oneLine a:hover {
+  text-decoration: underline;
+}

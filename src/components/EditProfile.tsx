@@ -94,7 +94,7 @@ function EditProfile({ user, edited, setDraft }: EditProfileProps) {
                   onChange={(e) =>
                     fileChangeHandler(
                       e,
-                      `${user?.id}/cover`,
+                      `cover`,
                       (value) => dispatch({ key: 'coverURL', value }),
                       setLoadingCover
                     )
@@ -135,7 +135,7 @@ function EditProfile({ user, edited, setDraft }: EditProfileProps) {
                       onChange={(e) =>
                         fileChangeHandler(
                           e,
-                          `${user?.id}/photo`,
+                          `photo`,
                           (value) => dispatch({ key: 'photoURL', value }),
                           setLoadingImage
                         )

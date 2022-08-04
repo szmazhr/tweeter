@@ -27,6 +27,13 @@
   background-color: var(--primary-color);
 }
 
+.primary-disabled {
+  color: white;
+  background-color: var(--primary-color);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 .light:hover {
   background-color: var(--muted-light);
 }

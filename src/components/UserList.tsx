@@ -9,7 +9,7 @@ type UserListProps = {
   ids: string[] | null;
   onEmpty?: ReactNode;
   followBtn?: boolean;
-  type?: 'min' | 'default' | 'full';
+  type?: 'min' | 'default';
 };
 
 function UserList({ ids, onEmpty, followBtn, type }: UserListProps) {

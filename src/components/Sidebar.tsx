@@ -4,13 +4,14 @@ import { convertToSlug } from '../utils/utils';
 import LogoImg from './LogoImg';
 import styles from './Sidebar.module.css';
 import SidebarOption from './SidebarOption';
-import TweetBtn from './TweetBtn';
 import UserImage from './UserImage';
 import UserName from './UserName';
 import UserUserName from './UserUserName';
 import $firebase from '../apis/firebase';
 import { LoggedInUser } from '../contexts/index.c';
 import Types from '../types/index.t';
+import PopUp from './PopUp';
+import TweetBox from './TweetBox';
 
 const basicOptions = [
   {
@@ -42,10 +43,11 @@ const initialState = {
   iconB: 'person-fill',
 };
 
-function Sidebar() {
+function Sidebar({ className }: { className?: string }) {
   const [profileOption, setProfileOption] = useState(initialState);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const loggedInUser = useContext(LoggedInUser);
+  const [isTweeting, setIsTweeting] = useState(false);
 
   const profileClickHandler = () => {
     if (sidebarRef.current) {
@@ -62,8 +64,13 @@ function Sidebar() {
     }
   }, []);
 
+  // useEffect(() => {
+  //   // setInnerHtml(`<div style='color: red;'>${textarea}</div>`);
+  //   setInnerHtml(textarea);
+  // }, [textarea]);
+
   return (
-    <div ref={sidebarRef}>
+    <div ref={sidebarRef} className={className}>
       <div className={styles.sidebarMobile} />
       <div className={styles.sidebar}>
         {/* twitter icon */}
@@ -96,7 +103,29 @@ function Sidebar() {
               </div>
               {/* Tweet Btn option */}
               <div className={`${styles.sidebarItems} ${styles.tweetBtn}`}>
-                <TweetBtn type="sidebar" action="openEditor" />
+                <button
+                  className={styles.BtnOpenEditor}
+                  type="button"
+                  onClick={() => {
+                    setIsTweeting(true);
+                  }}
+                >
+                  <i className="bi bi-pencil-square" />
+                  <span>Tweet</span>
+                </button>
+                {isTweeting && (
+                  <PopUp
+                    className={styles.tweetEditor}
+                    title=""
+                    backBtnClickHandler={() => setIsTweeting(false)}
+                  >
+                    <TweetBox
+                      onSuccess={() => {
+                        return null;
+                      }}
+                    />
+                  </PopUp>
+                )}
               </div>
             </>
           ) : (

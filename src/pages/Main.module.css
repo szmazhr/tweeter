@@ -5,9 +5,15 @@
   margin: auto;
 }
 
+.app .sidebar {
+  z-index: 2;
+
+}
+
 .app .content {
   display: grid;
   grid-template-columns: max-content max-content;
+  z-index: 1;
 
 }
 

@@ -12,7 +12,7 @@ import { LoggedInUser } from '../contexts/index.c';
 
 type UserCardProps = {
   user: Types.userProfileLocal;
-  type?: 'min' | 'default' | 'full';
+  type?: 'min' | 'default';
   followBtn?: boolean;
 };
 

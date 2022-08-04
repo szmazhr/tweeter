@@ -1,5 +1,9 @@
 import { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ConnectWidget from '../components/ConnectWidget';
+import Search from '../components/Search';
+import TopBar from '../components/TopBar';
+import TweetBox from '../components/TweetBox';
 import Tweets from '../components/Tweets';
 import { LoggedInUser } from '../contexts/index.c';
 
@@ -19,8 +23,26 @@ function Main() {
 
   return (
     <>
-      <Tweets />
-      <section>sidebar right</section>
+      <div className="container">
+        <TopBar title="Home" />
+        <TweetBox
+          onSuccess={() => {
+            return null;
+          }}
+        />
+        <hr
+          style={{
+            borderTop: '1px solid var(--muted-light)',
+            borderBottom: 'none',
+            margin: 0,
+          }}
+        />
+        <Tweets />
+      </div>
+      <section>
+        <Search />
+        <ConnectWidget title="Who to follow" />
+      </section>
     </>
   );
 }

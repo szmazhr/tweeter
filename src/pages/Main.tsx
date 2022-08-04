@@ -24,7 +24,7 @@ function Main() {
         <Error404 />
       ) : (
         <>
-          <Sidebar />
+          <Sidebar className={styles.sidebar} />
           <div className={styles.content}>
             <Outlet />
           </div>

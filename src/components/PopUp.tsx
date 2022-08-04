@@ -8,6 +8,7 @@ type PopUpProps = {
   backBtnClickHandler?: () => void;
   actionBtn?: string;
   onAction?: () => void;
+  className?: string;
 };
 
 function PopUp({
@@ -16,10 +17,11 @@ function PopUp({
   backBtnClickHandler,
   actionBtn,
   onAction,
+  className,
 }: PopUpProps) {
   return (
     <section className={styles.container}>
-      <div className={styles.box}>
+      <div className={`${styles.box} ${className}`}>
         <TopBar
           title={title}
           backBtnClickHandler={backBtnClickHandler}
