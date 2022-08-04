@@ -8,6 +8,7 @@ type IconBtnProps = {
   onClick: () => void;
   color?: string;
   btnStyle?: 'editor';
+  active?: boolean;
 };
 
 function IconBtn({
@@ -17,6 +18,7 @@ function IconBtn({
   label,
   counter,
   btnStyle,
+  active,
 }: IconBtnProps) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isHover, setIsHover] = useState(false);
@@ -59,9 +61,12 @@ function IconBtn({
             background: `linear-gradient(rgba(255, 255, 255, .9), rgba(255, 255, 255, .9)), linear-gradient(${color}, ${color})`,
           }}
         />
-        <i className={`bi bi-${icon} ${styles.icon}`} />
+        <i
+          className={`bi bi-${icon} ${styles.icon}`}
+          style={active ? { color } : {}}
+        />
       </button>
-      {counter && (
+      {!!counter && (
         <span ref={counterRef} className={styles.counter}>
           {counter}
         </span>

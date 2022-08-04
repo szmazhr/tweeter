@@ -144,6 +144,40 @@ const $firebase = (() => {
     }
   };
 
+  const addLikes = async (uid: Types.postDataLocal['id']) => {
+    const currentUserId = auth.currentUser?.uid;
+    if (currentUserId) {
+      const userRef = db.collection('users').doc(currentUserId);
+      userRef.update({
+        likes: firebase.firestore.FieldValue.arrayUnion(uid),
+      });
+    }
+  };
+
+  const removeLikes = async (uid: Types.postDataLocal['id']) => {
+    const currentUserId = auth.currentUser?.uid;
+    if (currentUserId) {
+      const userRef = db.collection('users').doc(currentUserId);
+      userRef.update({
+        likes: firebase.firestore.FieldValue.arrayRemove(uid),
+      });
+    }
+  };
+
+  const watchLikes = (
+    postId: Types.postDataLocal['id'],
+    callback: Dispatch<SetStateAction<number>>
+  ) => {
+    const unsubscribe = db
+      .collection('users')
+      .where('likes', 'array-contains', postId)
+      .onSnapshot((snapshot) => {
+        const likes = snapshot.docs.length;
+        callback(likes);
+      });
+    return unsubscribe;
+  };
+
   // const transferImage = async (url: string) => {
   //   const res = await fetch(url, { mode: 'no-cors' });
   //   const blob = await res.blob();
@@ -324,7 +358,8 @@ const $firebase = (() => {
       text,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     } as Types.postData);
-    db.collection(`users/${uid}/tweets`).add({ ...tweet });
+    const doc = await db.collection(`users/${uid}/tweets`).add({ ...tweet });
+    doc.update({ id: doc.id });
 
     const userRef = db.collection('users').doc(uid);
     userRef.update({
@@ -366,6 +401,17 @@ const $firebase = (() => {
     });
   };
 
+  const getTweetsById = async (id: string[]) => {
+    const snapshot = await db
+      .collectionGroup('tweets')
+      .where('id', 'in', id)
+      .orderBy('createdAt', 'desc')
+      .get();
+    return snapshot.docs.map((doc) => {
+      return doc.data() as Types.postDataLocal;
+    });
+  };
+
   const getTweetsByHashTag = async (hashTag: string) => {
     const snapshot = await db
       .collectionGroup('tweets')
@@ -380,7 +426,6 @@ const $firebase = (() => {
         } as Types.userProfileLocal;
         return {
           ...doc.data(),
-          id: doc.id,
           author: parent,
         } as Types.postDataLocal;
       })
@@ -417,6 +462,10 @@ const $firebase = (() => {
     getAllUsers,
     getFollowersCount,
     postNewTweet,
+    addLikes,
+    removeLikes,
+    watchLikes,
+    getTweetsById,
   };
 })();
 

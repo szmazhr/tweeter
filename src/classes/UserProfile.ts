@@ -19,6 +19,8 @@ export default class UserProfile implements Types.userDraft {
 
   readonly verified: boolean;
 
+  readonly likes: string[];
+
   constructor({
     createdAt,
     bio,
@@ -29,6 +31,7 @@ export default class UserProfile implements Types.userDraft {
     followings,
     verified,
     location,
+    likes,
   }: Types.userProfile) {
     this.createdAt = createdAt;
     this.bio = bio || '';
@@ -39,5 +42,6 @@ export default class UserProfile implements Types.userDraft {
     this.followings = followings || [];
     this.verified = verified || false;
     this.location = location || '';
+    this.likes = likes || [];
   }
 }

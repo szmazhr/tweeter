@@ -1,7 +1,7 @@
 .postContainer {
   display: flex;
   flex-direction: column;
-  padding: calc(2px + 0.5vw) calc(5px + 1vw);
+  padding: calc(5px + 0.5vw) calc(5px + 1vw);
   border-bottom: 1px solid var(--muted-light);
   cursor: pointer;
   transition: background-color 0.3s ease-out;

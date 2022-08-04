@@ -120,7 +120,11 @@ function TweetBox({ onSuccess }: { onSuccess: () => void }) {
           </div>
         </div>
       </div>
-      {isTweeting && <Loading />}
+      {isTweeting && (
+        <div className={styles.loading}>
+          <Loading />
+        </div>
+      )}
     </div>
   );
 }

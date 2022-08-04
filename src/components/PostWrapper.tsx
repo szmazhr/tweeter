@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import $firebase from '../apis/firebase';
+import { LoggedInUser } from '../contexts/index.c';
 import Types from '../types/index.t';
 import { timeAgo } from '../utils/utils';
 import IconBtn from './IconBtn';
@@ -11,6 +13,17 @@ import UserUserName from './UserUserName';
 
 function PostWrapper({ postData }: { postData: Types.postDataLocal }) {
   const [post, setPost] = useState(postData);
+  const loggedInUser = useContext(LoggedInUser);
+  const [isLiking, setIsLiking] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+
+  const likeClickHandler = () => {
+    if (loggedInUser?.likes?.includes(post.id)) {
+      $firebase.removeLikes(post.id);
+    } else {
+      $firebase.addLikes(post.id);
+    }
+  };
 
   useEffect(() => {
     setPost((_post) => ({
@@ -18,6 +31,19 @@ function PostWrapper({ postData }: { postData: Types.postDataLocal }) {
       timeAgo: timeAgo(post.createdAt),
     }));
   }, []);
+
+  useEffect(() => {
+    const unSub = $firebase.watchLikes(post.id, setLikeCount);
+    return () => unSub();
+  }, []);
+
+  useEffect(() => {
+    if (loggedInUser?.likes?.includes(post.id)) {
+      setIsLiking(true);
+    } else {
+      setIsLiking(false);
+    }
+  }, [loggedInUser]);
 
   return (
     // <div>Post Wrapper</div>
@@ -54,10 +80,12 @@ function PostWrapper({ postData }: { postData: Types.postDataLocal }) {
           color="#00ba7c"
         />
         <IconBtn
-          icon="heart"
+          icon={isLiking ? 'heart-fill' : 'heart'}
+          active={isLiking}
           label="Like"
           color="#f91880"
-          onClick={() => undefined}
+          onClick={likeClickHandler}
+          counter={likeCount}
         />
         <IconBtn icon="upload" label="Share" onClick={() => undefined} />
       </div>

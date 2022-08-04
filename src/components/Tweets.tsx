@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
-import { useEffect, useState } from 'react';
-import { useOutletContext, useParams } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { useLocation, useOutletContext, useParams } from 'react-router-dom';
 import $firebase from '../apis/firebase';
+import { LoggedInUser } from '../contexts/index.c';
 import Types from '../types/index.t';
 import PostWrapper from './PostWrapper';
 
@@ -22,6 +23,8 @@ function Tweets() {
     undefined
   );
   const user = useOutletContext<Types.userProfileLocal>();
+  const location = useLocation();
+  const loggedInUser = useContext(LoggedInUser);
 
   const addUserDataToPost = (_postsData: Types.postDataLocal[]) => {
     if (user) {
@@ -38,14 +41,30 @@ function Tweets() {
     ----Number of Ways Tweets can  be fetched----
     1. Get all tweets
     2. Get tweets by username / uid
-    3. Get tweets by hashtag
+    3. Get tweets by username / uid + likes
+    4. Get tweets by hashtag
     */
     if (user) {
-      $firebase
-        .getTweetsByUid(user.id)
-        .then(addUserDataToPost)
-        // eslint-disable-next-line no-console
-        .catch(console.error);
+      if (
+        location.pathname === `/${user.userName}/likes` ||
+        location.pathname === `/${user.userName}/likes/`
+      ) {
+        if (user.likes.length > 0) {
+          $firebase
+            .getTweetsById(user.likes)
+            .then(addUserDataToPost)
+            // eslint-disable-next-line no-console
+            .catch(console.error);
+        } else {
+          setPostsData([]);
+        }
+      } else {
+        $firebase
+          .getTweetsByUid(user.id)
+          .then(addUserDataToPost)
+          // eslint-disable-next-line no-console
+          .catch(console.error);
+      }
     } else if (hashTag) {
       $firebase
         .getTweetsByHashTag(hashTag)
@@ -56,7 +75,7 @@ function Tweets() {
       // eslint-disable-next-line no-console
       $firebase.getAllTweets().then(setPostsData).catch(console.error);
     }
-  }, [user, hashTag]);
+  }, [user, location, loggedInUser?.tweetCount]);
 
   return (
     <main>

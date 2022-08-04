@@ -78,7 +78,7 @@ function RouterSwitch() {
                 element={<div>With Tweets</div>}
               />
               <Route path="/:username/media" element={<div>Media</div>} />
-              <Route path="/:username/likes" element={<div>Likes</div>} />
+              <Route path="/:username/likes" element={<Tweets />} />
               <Route path="/:username/followers" element={<Connections />} />
               <Route path="/:username/following" element={<Connections />} />
             </Route>
