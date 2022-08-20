@@ -7,6 +7,11 @@ import Tweet from '../classes/Tweet';
 import UserProfile from '../classes/UserProfile';
 import Types from '../types/index.t';
 
+const removeFileExtension = (fileName: string) => {
+  const fileExtension = fileName.split('.').pop();
+  return fileName.replace(`.${fileExtension}`, '');
+};
+
 const $firebase = (() => {
   // firebase config
   const firebaseConfig = {
@@ -283,7 +288,9 @@ const $firebase = (() => {
    */
   const uploadImage = async (file: File, location = 'images') => {
     const fileRef = storageRef.child(
-      `${auth.currentUser?.uid}/${location}/${file.name}`
+      `${auth.currentUser?.uid}/${location}/${removeFileExtension(
+        file.name
+      )}_${new Date().getTime()}`
     );
     const snapshot = await fileRef.put(file);
     return snapshot.ref.getDownloadURL();
@@ -352,11 +359,12 @@ const $firebase = (() => {
     return followers.size;
   };
 
-  const postNewTweet = async (text: string) => {
+  const postNewTweet = async (text: string, images: string[]) => {
     const uid = auth.currentUser?.uid;
     const tweet = new Tweet({
       text,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      media: images,
     } as Types.postData);
     const doc = await db.collection(`users/${uid}/tweets`).add({ ...tweet });
     doc.update({ id: doc.id });
@@ -381,7 +389,6 @@ const $firebase = (() => {
         } as Types.userProfileLocal;
         return {
           ...doc.data(),
-          id: doc.id,
           author: parent,
         } as Types.postDataLocal;
       })
@@ -396,7 +403,6 @@ const $firebase = (() => {
     return snapshot.docs.map((doc) => {
       return {
         ...doc.data(),
-        id: doc.id,
       } as Types.postDataLocal;
     });
   };
@@ -407,9 +413,19 @@ const $firebase = (() => {
       .where('id', 'in', id)
       .orderBy('createdAt', 'desc')
       .get();
-    return snapshot.docs.map((doc) => {
-      return doc.data() as Types.postDataLocal;
-    });
+    return Promise.all(
+      snapshot.docs.map(async (doc) => {
+        const res = await doc.ref.parent.parent?.get();
+        const parent = {
+          ...res?.data(),
+          id: res?.id,
+        } as Types.userProfileLocal;
+        return {
+          ...doc.data(),
+          author: parent,
+        } as Types.postDataLocal;
+      })
+    );
   };
 
   const getTweetsByHashTag = async (hashTag: string) => {

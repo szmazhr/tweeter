@@ -1,5 +1,6 @@
 .oneLine {
   min-height: 1.45em;
+  overflow-wrap: anywhere;
 }
 
 .oneLine a {

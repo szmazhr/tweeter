@@ -60,3 +60,9 @@
 .editor {
   color: var(--primary-color);
 }
+
+.editor-disabled {
+  color: var(--primary-color);
+  opacity: 0.5;
+  pointer-events: none;
+}

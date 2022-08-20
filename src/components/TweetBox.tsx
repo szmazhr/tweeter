@@ -7,25 +7,39 @@ import Btn from './Btn';
 import PostText from './PostText';
 import $firebase from '../apis/firebase';
 import Loading from './Loading';
+import useFileChangeHandler from '../hooks/useFileChangeHandler';
+import PostImages from './PostImages';
 
 function TweetBox({ onSuccess }: { onSuccess: () => void }) {
   const loggedInUser = useContext(LoggedInUser);
   const [textarea, setTextarea] = useState<string>('');
   const editorRef = useRef<HTMLTextAreaElement>(null);
   const [isTweeting, setIsTweeting] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [images, setImages] = useState<string[]>([]);
+  const fileChangeHandler = useFileChangeHandler();
+  const [loadingImage, setLoadingImage] = useState<boolean>(false);
+  const imgInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = () => {
     if (!loggedInUser) return;
     setIsTweeting(true);
     $firebase
-      .postNewTweet(textarea)
+      .postNewTweet(textarea, images)
       .then(() => {
         onSuccess();
         setIsTweeting(false);
         setTextarea('');
+        setImages([]);
       })
       // eslint-disable-next-line no-console
       .catch(console.error);
+  };
+
+  const handleImageChange = (url: string) => {
+    if (images.length < 4) {
+      setImages((prev) => [...prev, url]);
+    }
   };
 
   const inputHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -64,24 +78,45 @@ function TweetBox({ onSuccess }: { onSuccess: () => void }) {
             </div>
           )}
         </div>
+        <PostImages
+          media={images}
+          loadingImage={loadingImage}
+          className={styles.tweetBoxPostImg}
+          removeImage={setImages}
+        />
         <div className={styles.row_action}>
           <div className={styles.miniAction}>
+            <input
+              ref={imgInputRef}
+              type="file"
+              onChange={(e) =>
+                fileChangeHandler(
+                  e,
+                  `posts`,
+                  (value) => handleImageChange(value),
+                  setLoadingImage
+                )
+              }
+              accept="image/*"
+              id="coverImage"
+              hidden
+            />
             <IconBtn
               icon="image"
               label="media"
-              btnStyle="editor"
+              btnStyle={images.length < 4 ? 'editor' : 'editor-disabled'}
               onClick={() => {
-                return null;
+                imgInputRef.current?.click();
               }}
             />
-            <IconBtn
+            {/* <IconBtn
               icon="filetype-gif"
               label="GIF"
               btnStyle="editor"
               onClick={() => {
                 return null;
               }}
-            />
+            /> */}
           </div>
           {!!textarea && (
             <div className={styles.progressBarContainer}>
@@ -112,7 +147,11 @@ function TweetBox({ onSuccess }: { onSuccess: () => void }) {
           )}
           <div className={styles.tweetBtnContainer}>
             <Btn
-              btnStyle={textarea ? 'primary' : 'primary-disabled'}
+              btnStyle={
+                (textarea.trim() || images.length) && !loadingImage
+                  ? 'primary'
+                  : 'primary-disabled'
+              }
               label="Tweet"
               className={styles.tweetBtn}
               onClick={handleSubmit}

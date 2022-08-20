@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ConnectWidget from '../components/ConnectWidget';
 import Search from '../components/Search';
 import TopBar from '../components/TopBar';
@@ -10,6 +10,7 @@ import { LoggedInUser } from '../contexts/index.c';
 function Main() {
   const loggedInUser = useContext(LoggedInUser);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     document.title = `Home / Tweeter`;
@@ -25,21 +26,25 @@ function Main() {
     <>
       <div className="container">
         <TopBar title="Home" />
-        <TweetBox
-          onSuccess={() => {
-            return null;
-          }}
-        />
-        <hr
-          style={{
-            borderTop: '1px solid var(--muted-light)',
-            borderBottom: 'none',
-            margin: 0,
-          }}
-        />
+        {/^\/home\/?$/.test(location.pathname) && (
+          <>
+            <TweetBox
+              onSuccess={() => {
+                return null;
+              }}
+            />
+            <hr
+              style={{
+                borderTop: '1px solid var(--muted-light)',
+                borderBottom: 'none',
+                margin: 0,
+              }}
+            />
+          </>
+        )}
         <Tweets />
       </div>
-      <section>
+      <section className="right-sidebar">
         <Search />
         <ConnectWidget title="Who to follow" />
       </section>

@@ -18,14 +18,14 @@ const links = [
     path: '/',
     label: 'Tweets',
   },
-  {
-    path: '/with_replies',
-    label: 'Tweets & replies',
-  },
-  {
-    path: '/media',
-    label: 'Media',
-  },
+  // {
+  //   path: '/with_replies',
+  //   label: 'Tweets & replies',
+  // },
+  // {
+  //   path: '/media',
+  //   label: 'Media',
+  // },
   {
     path: '/likes',
     label: 'Likes',

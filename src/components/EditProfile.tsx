@@ -1,5 +1,4 @@
 import {
-  ChangeEvent,
   Dispatch,
   SetStateAction,
   useEffect,
@@ -7,6 +6,7 @@ import {
   useState,
 } from 'react';
 import $firebase from '../apis/firebase';
+import useFileChangeHandler from '../hooks/useFileChangeHandler';
 import Types from '../types/index.t';
 import { isValidUsername } from '../utils/utils';
 import styles from './EditProfile.module.css';
@@ -42,25 +42,7 @@ function EditProfile({ user, edited, setDraft }: EditProfileProps) {
 
   const [loadingCover, setLoadingCover] = useState<boolean>(false);
   const [loadingImage, setLoadingImage] = useState<boolean>(false);
-
-  const fileChangeHandler = (
-    e: ChangeEvent<HTMLInputElement>,
-    fileLocation: string,
-    // eslint-disable-next-line no-unused-vars
-    callback: (str: string) => void,
-    beforeAfter?: Dispatch<SetStateAction<boolean>>
-  ) => {
-    const file = e.target.files?.item(0);
-    if (file) {
-      beforeAfter?.(true);
-      $firebase
-        .uploadImage(file, fileLocation)
-        .then(callback)
-        .then(() => beforeAfter?.(false))
-        // eslint-disable-next-line no-console
-        .catch(console.error);
-    }
-  };
+  const fileChangeHandler = useFileChangeHandler();
 
   useEffect(() => {
     if (

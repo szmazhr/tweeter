@@ -52,7 +52,7 @@ function Tweets() {
         if (user.likes.length > 0) {
           $firebase
             .getTweetsById(user.likes)
-            .then(addUserDataToPost)
+            .then(setPostsData)
             // eslint-disable-next-line no-console
             .catch(console.error);
         } else {

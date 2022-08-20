@@ -5,6 +5,7 @@ import { LoggedInUser } from '../contexts/index.c';
 import Types from '../types/index.t';
 import { timeAgo } from '../utils/utils';
 import IconBtn from './IconBtn';
+import PostImages from './PostImages';
 import PostText from './PostText';
 import styles from './PostWrapper.module.css';
 import UserImage from './UserImage';
@@ -57,10 +58,10 @@ function PostWrapper({ postData }: { postData: Types.postDataLocal }) {
         <div className={styles.col_right}>
           <div className={styles.postHeader}>
             <div className={styles.postHeaderInfo}>
-              <Link to={post.author.userName} className={styles.name}>
+              <Link to={`/${post.author.userName}`} className={styles.name}>
                 <UserName user={post.author} verified />
               </Link>
-              <Link to={post.author.userName} className={styles.username}>
+              <Link to={`/${post.author.userName}`} className={styles.username}>
                 <UserUserName username={post.author.userName} />
               </Link>
               <span className={styles.time}>{post.timeAgo}</span>
@@ -68,6 +69,7 @@ function PostWrapper({ postData }: { postData: Types.postDataLocal }) {
           </div>
           <div className={styles.postBody}>
             <PostText className={styles.text} text={post.text} />
+            <PostImages className={styles.media} media={post.media} />
           </div>
         </div>
       </div>

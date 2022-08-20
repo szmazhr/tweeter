@@ -19,21 +19,21 @@ const basicOptions = [
     iconA: 'house',
     iconB: 'house-fill',
   },
-  {
-    label: 'Explore',
-    iconA: 'compass',
-    iconB: 'compass-fill',
-  },
-  {
-    label: 'Notifications',
-    iconA: 'bell',
-    iconB: 'bell-fill',
-  },
-  {
-    label: 'Messages',
-    iconA: 'envelope',
-    iconB: 'envelope-fill',
-  },
+  // {
+  //   label: 'Explore',
+  //   iconA: 'compass',
+  //   iconB: 'compass-fill',
+  // },
+  // {
+  //   label: 'Notifications',
+  //   iconA: 'bell',
+  //   iconB: 'bell-fill',
+  // },
+  // {
+  //   label: 'Messages',
+  //   iconA: 'envelope',
+  //   iconB: 'envelope-fill',
+  // },
 ];
 
 const initialState = {

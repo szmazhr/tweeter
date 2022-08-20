@@ -7,7 +7,7 @@ type IconBtnProps = {
   label?: string;
   onClick: () => void;
   color?: string;
-  btnStyle?: 'editor';
+  btnStyle?: 'editor' | 'editor-disabled' | '';
   active?: boolean;
 };
 
@@ -17,8 +17,8 @@ function IconBtn({
   color,
   label,
   counter,
-  btnStyle,
   active,
+  btnStyle = '',
 }: IconBtnProps) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isHover, setIsHover] = useState(false);
@@ -51,7 +51,7 @@ function IconBtn({
       <button
         className={`${styles.btn} ${btnStyle ? styles[btnStyle] : ''}`}
         type="button"
-        onClick={onClick}
+        onClick={!/disabled/.test(btnStyle) ? onClick : undefined}
         data-title={label}
         ref={btnRef}
       >
